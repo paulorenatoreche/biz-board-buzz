@@ -3,11 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import BulletinBoard from "@/components/BulletinBoard";
 import { useNavigate } from "react-router-dom";
+import PasswordProtection from "@/components/PasswordProtection";
 
 const Index = () => {
   const navigate = useNavigate();
 
-  return (
+  const MainContent = () => (
     <div className="min-h-screen bg-gradient-to-br from-amber-100 to-orange-50">
       <div className="container mx-auto px-4 py-8">
         <header className="mb-8 relative">
@@ -33,6 +34,12 @@ const Index = () => {
         <BulletinBoard />
       </div>
     </div>
+  );
+
+  return (
+    <PasswordProtection correctPassword="1234">
+      <MainContent />
+    </PasswordProtection>
   );
 };
 

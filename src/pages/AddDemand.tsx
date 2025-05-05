@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,14 +12,14 @@ import { useForm } from "react-hook-form";
 
 // Service categories with their tag colors
 export const SERVICE_CATEGORIES = [
-  { value: "civil-project", label: "Civil Project", color: "#F2FCE2" },
-  { value: "electrical-project", label: "Electrical Project", color: "#FEF7CD" },
-  { value: "electrical-studies", label: "Electrical Studies", color: "#FEC6A1" },
-  { value: "environmental-services", label: "Environmental Services", color: "#E5DEFF" },
-  { value: "engineering-consulting", label: "Engineering Consulting", color: "#FFDEE2" },
-  { value: "equipment", label: "Equipment", color: "#FDE1D3" },
+  { value: "civil-project", label: "Projeto Civil", color: "#F2FCE2" },
+  { value: "electrical-project", label: "Projeto Elétrico", color: "#FEF7CD" },
+  { value: "electrical-studies", label: "Estudos Elétricos", color: "#FEC6A1" },
+  { value: "environmental-services", label: "Serviços Ambientais", color: "#E5DEFF" },
+  { value: "engineering-consulting", label: "Consultoria em Engenharia", color: "#FFDEE2" },
+  { value: "equipment", label: "Equipamentos", color: "#FDE1D3" },
   { value: "o-and-m", label: "O&M", color: "#D3E4FD" },
-  { value: "training-courses", label: "Training & Courses", color: "#F1F0FB" },
+  { value: "training-courses", label: "Treinamentos & Cursos", color: "#F1F0FB" },
 ];
 
 interface FormData {

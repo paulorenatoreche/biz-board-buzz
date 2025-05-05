@@ -16,7 +16,7 @@ const Index = () => {
             <img 
               src="https://abeeolica.org.br/wp-content/themes/abeeolica/dist/img/logotipo.svg" 
               alt="ABEEÓLICA Logo" 
-              className="h-8 md:h-10" // Reduced height by 50% from h-16/h-20 to h-8/h-10
+              className="h-8 md:h-10" 
             />
           </div>
           <div className="text-center">

@@ -20,7 +20,7 @@ const Index = () => {
             />
           </div>
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">Business Hub</h1>
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">Hub de Negócios</h1>
             <p className="text-gray-600 mb-6">Find and share business opportunities. Powered by ABEEÓLICA</p>
             <Button 
               onClick={() => navigate("/add-demand")}

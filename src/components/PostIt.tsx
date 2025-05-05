@@ -39,21 +39,21 @@ const PostIt = ({ post }: PostItProps) => {
   return (
     <>
       <Card 
-        className="bg-[#FEF7CD] hover:shadow-lg transition-shadow duration-200 border-4 border-amber-500 cursor-pointer shadow-md"
+        className="bg-[#FEF7CD] hover:shadow-lg transition-shadow duration-200 border-4 border-amber-500 cursor-pointer shadow-md flex flex-col h-full"
         onClick={() => setShowDetails(true)}
       >
         <CardHeader className="pb-2">
           <h3 className="font-bold text-gray-800">{post.companyName}</h3>
           <p className="text-sm text-gray-600">{post.fullName}</p>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-grow">
           <p className="text-gray-700 mb-4 whitespace-pre-wrap line-clamp-4">{post.description}</p>
           <div className="text-xs text-gray-500 space-y-1">
             <p>Posted: {format(new Date(post.createdAt), "MMM d, yyyy")}</p>
             <p>Expires in: {daysRemaining()} days</p>
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="mt-auto">
           <Button 
             onClick={(e) => {
               e.stopPropagation();

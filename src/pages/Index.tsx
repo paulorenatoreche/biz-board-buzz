@@ -13,7 +13,7 @@ const Index = () => {
         <header className="mb-8 relative">
           <div className="absolute right-0 top-0 md:mr-4">
             <img 
-              src="https://abeeeolica.org.br/wp-content/uploads/2022/07/logo-header.png" 
+              src="https://abeeolica.org.br/wp-content/themes/abeeolica/dist/img/logotipo.svg" 
               alt="ABEEÓLICA Logo" 
               className="h-16 md:h-20"
             />

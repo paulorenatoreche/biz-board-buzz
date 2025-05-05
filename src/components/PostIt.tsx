@@ -1,9 +1,16 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
+
+interface Category {
+  value: string;
+  label: string;
+  color: string;
+}
 
 interface Post {
   id: string;
@@ -12,6 +19,7 @@ interface Post {
   description: string;
   email: string;
   phone: string;
+  category: Category;
   createdAt: string;
   expiresAt: string;
 }
@@ -43,8 +51,18 @@ const PostIt = ({ post }: PostItProps) => {
         onClick={() => setShowDetails(true)}
       >
         <CardHeader className="pb-2">
-          <h3 className="font-bold text-gray-800">{post.companyName}</h3>
-          <p className="text-sm text-gray-600">{post.fullName}</p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="font-bold text-gray-800">{post.companyName}</h3>
+              <p className="text-sm text-gray-600">{post.fullName}</p>
+            </div>
+            <Badge 
+              className="ml-2" 
+              style={{ backgroundColor: post.category?.color || '#F1F0FB', color: '#333' }}
+            >
+              {post.category?.label || "Uncategorized"}
+            </Badge>
+          </div>
         </CardHeader>
         <CardContent className="flex-grow">
           <p className="text-gray-700 mb-4 whitespace-pre-wrap line-clamp-4">{post.description}</p>
@@ -69,7 +87,14 @@ const PostIt = ({ post }: PostItProps) => {
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
         <DialogContent className="bg-[#FEF7CD] border-4 border-amber-500 max-w-xl">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-gray-800">{post.companyName}</DialogTitle>
+            <div className="flex justify-between items-center">
+              <DialogTitle className="text-xl font-bold text-gray-800">{post.companyName}</DialogTitle>
+              <Badge 
+                style={{ backgroundColor: post.category?.color || '#F1F0FB', color: '#333' }}
+              >
+                {post.category?.label || "Uncategorized"}
+              </Badge>
+            </div>
             <DialogDescription className="text-gray-600">
               Posted by {post.fullName}
             </DialogDescription>

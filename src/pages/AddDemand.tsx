@@ -17,40 +17,80 @@ const AddDemand = () => {
     companyName: "",
     description: "",
   });
+  const [isSending, setIsSending] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSending(true);
     
-    // Generate a unique ID for the post
-    const postId = uuidv4();
-    
-    // Create the new post object with all required fields
-    const newPost = {
-      id: postId,
-      fullName: formData.fullName,
-      companyName: formData.companyName,
-      description: formData.description,
-      email: formData.email,
-      phone: formData.phone,
-      createdAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
-    };
-    
-    // Get existing posts from localStorage
-    const existingPostsJSON = localStorage.getItem('bulletinPosts');
-    const existingPosts = existingPostsJSON ? JSON.parse(existingPostsJSON) : [];
-    
-    // Add new post to the array
-    const updatedPosts = [newPost, ...existingPosts];
-    
-    // Save back to localStorage
-    localStorage.setItem('bulletinPosts', JSON.stringify(updatedPosts));
-    
-    // Show success message
-    toast.success("Your business opportunity has been posted!");
-    
-    // Navigate back to the bulletin board
-    navigate("/");
+    try {
+      // Generate a unique ID for the post
+      const postId = uuidv4();
+      
+      // Create the new post object with all required fields
+      const newPost = {
+        id: postId,
+        fullName: formData.fullName,
+        companyName: formData.companyName,
+        description: formData.description,
+        email: formData.email,
+        phone: formData.phone,
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+      };
+      
+      // Get existing posts from localStorage
+      const existingPostsJSON = localStorage.getItem('bulletinPosts');
+      const existingPosts = existingPostsJSON ? JSON.parse(existingPostsJSON) : [];
+      
+      // Add new post to the array
+      const updatedPosts = [newPost, ...existingPosts];
+      
+      // Save back to localStorage
+      localStorage.setItem('bulletinPosts', JSON.stringify(updatedPosts));
+      
+      // Send email notification to admin
+      try {
+        // Email service implementation (client-side only implementation)
+        const emailData = {
+          to: "paulo.renato.reche@gmail.com",
+          subject: `New Business Opportunity: ${formData.companyName}`,
+          body: `
+            A new business opportunity has been posted:
+            
+            Company: ${formData.companyName}
+            Contact: ${formData.fullName}
+            Email: ${formData.email}
+            Phone: ${formData.phone}
+            
+            Description:
+            ${formData.description}
+            
+            Expires: ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+          `
+        };
+        
+        // Using window.open to create a mailto link (this is a client-side approach)
+        // This will open the user's email client with a pre-filled email
+        window.open(`mailto:${emailData.to}?subject=${encodeURIComponent(emailData.subject)}&body=${encodeURIComponent(emailData.body)}`, '_blank');
+        
+        toast.success("Your business opportunity has been posted!");
+        toast.info("Please send the notification email from your email client");
+      } catch (emailError) {
+        console.error("Failed to send admin notification:", emailError);
+        // Still show success for the post creation even if email fails
+        toast.success("Your business opportunity has been posted!");
+        toast.error("Admin notification could not be sent automatically");
+      }
+      
+      // Navigate back to the bulletin board
+      navigate("/");
+    } catch (error) {
+      console.error("Error creating post:", error);
+      toast.error("Failed to create your post. Please try again.");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -118,8 +158,12 @@ const AddDemand = () => {
                 <Button type="button" variant="outline" onClick={() => navigate("/")}>
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white">
-                  Post Opportunity
+                <Button 
+                  type="submit" 
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                  disabled={isSending}
+                >
+                  {isSending ? "Posting..." : "Post Opportunity"}
                 </Button>
               </div>
             </form>

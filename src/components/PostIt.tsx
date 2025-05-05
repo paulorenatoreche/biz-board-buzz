@@ -27,10 +27,19 @@ const PostIt = ({ post }: PostItProps) => {
     window.location.href = `mailto:${post.email}?subject=Business Opportunity Response`;
   };
 
+  // Calculate days remaining until expiration
+  const daysRemaining = () => {
+    const now = new Date();
+    const expiryDate = new Date(post.expiresAt);
+    const diffTime = expiryDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
   return (
     <>
       <Card 
-        className="bg-[#FEF7CD] hover:shadow-lg transition-shadow duration-200 border-4 border-amber-300 cursor-pointer"
+        className="bg-[#FEF7CD] hover:shadow-lg transition-shadow duration-200 border-4 border-amber-500 cursor-pointer shadow-md"
         onClick={() => setShowDetails(true)}
       >
         <CardHeader className="pb-2">
@@ -41,7 +50,7 @@ const PostIt = ({ post }: PostItProps) => {
           <p className="text-gray-700 mb-4 whitespace-pre-wrap line-clamp-4">{post.description}</p>
           <div className="text-xs text-gray-500 space-y-1">
             <p>Posted: {format(new Date(post.createdAt), "MMM d, yyyy")}</p>
-            <p>Expires: {format(new Date(post.expiresAt), "MMM d, yyyy")}</p>
+            <p>Expires in: {daysRemaining()} days</p>
           </div>
         </CardContent>
         <CardFooter>
@@ -58,7 +67,7 @@ const PostIt = ({ post }: PostItProps) => {
       </Card>
 
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="bg-[#FEF7CD] border-4 border-amber-300 max-w-xl">
+        <DialogContent className="bg-[#FEF7CD] border-4 border-amber-500 max-w-xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-gray-800">{post.companyName}</DialogTitle>
             <DialogDescription className="text-gray-600">
@@ -80,6 +89,7 @@ const PostIt = ({ post }: PostItProps) => {
                 <h3 className="font-semibold text-gray-700">Dates:</h3>
                 <p className="text-gray-700">Posted: {format(new Date(post.createdAt), "MMM d, yyyy")}</p>
                 <p className="text-gray-700">Expires: {format(new Date(post.expiresAt), "MMM d, yyyy")}</p>
+                <p className="text-gray-700 font-semibold">Expires in: {daysRemaining()} days</p>
               </div>
             </div>
           </div>

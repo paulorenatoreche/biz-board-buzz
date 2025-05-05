@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 const AddDemand = () => {
   const navigate = useNavigate();
@@ -18,7 +20,36 @@ const AddDemand = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Submit logic will be added after Supabase integration
+    
+    // Generate a unique ID for the post
+    const postId = uuidv4();
+    
+    // Create the new post object with all required fields
+    const newPost = {
+      id: postId,
+      fullName: formData.fullName,
+      companyName: formData.companyName,
+      description: formData.description,
+      email: formData.email,
+      phone: formData.phone,
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+    };
+    
+    // Get existing posts from localStorage
+    const existingPostsJSON = localStorage.getItem('bulletinPosts');
+    const existingPosts = existingPostsJSON ? JSON.parse(existingPostsJSON) : [];
+    
+    // Add new post to the array
+    const updatedPosts = [newPost, ...existingPosts];
+    
+    // Save back to localStorage
+    localStorage.setItem('bulletinPosts', JSON.stringify(updatedPosts));
+    
+    // Show success message
+    toast.success("Your business opportunity has been posted!");
+    
+    // Navigate back to the bulletin board
     navigate("/");
   };
 

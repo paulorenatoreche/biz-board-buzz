@@ -47,20 +47,10 @@ const PostIt = ({ post }: PostItProps) => {
   return (
     <>
       <Card 
-        className="bg-[#FEF7CD] hover:shadow-lg transition-shadow duration-200 border-4 border-amber-500 cursor-pointer shadow-md flex flex-col h-full relative"
+        className="bg-[#FEF7CD] hover:shadow-lg transition-shadow duration-200 border-4 border-amber-500 cursor-pointer shadow-md flex flex-col h-full"
         onClick={() => setShowDetails(true)}
       >
-        {/* Metal Clip Design */}
-        <div className="absolute w-12 h-4 bg-gray-400 rounded-b-md top-0 left-1/2 transform -translate-x-1/2 z-10 shadow-md" 
-          style={{ 
-            background: 'linear-gradient(to bottom, #8E9196, #D1D3D4)',
-            borderBottom: '1px solid #666',
-            borderLeft: '1px solid #666',
-            borderRight: '1px solid #666'
-          }} 
-        />
-        
-        <CardHeader className="pb-2 mt-3"> {/* Added margin-top to account for the clip */}
+        <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <div>
               <h3 className="font-bold text-gray-800">{post.companyName}</h3>
@@ -95,18 +85,8 @@ const PostIt = ({ post }: PostItProps) => {
       </Card>
 
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="bg-[#FEF7CD] border-4 border-amber-500 max-w-xl relative">
-          {/* Metal Clip Design for Dialog */}
-          <div className="absolute w-16 h-5 bg-gray-400 rounded-b-md top-0 left-1/2 transform -translate-x-1/2 z-10 shadow-md" 
-            style={{ 
-              background: 'linear-gradient(to bottom, #8E9196, #D1D3D4)',
-              borderBottom: '1px solid #666',
-              borderLeft: '1px solid #666',
-              borderRight: '1px solid #666'
-            }} 
-          />
-          
-          <DialogHeader className="mt-4"> {/* Added margin-top to account for the clip */}
+        <DialogContent className="bg-[#FEF7CD] border-4 border-amber-500 max-w-xl">
+          <DialogHeader>
             <div className="flex justify-between items-center">
               <DialogTitle className="text-xl font-bold text-gray-800">{post.companyName}</DialogTitle>
               <Badge 

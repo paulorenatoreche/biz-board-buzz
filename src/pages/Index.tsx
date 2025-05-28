@@ -12,7 +12,12 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-amber-100 to-orange-50">
       <div className="container mx-auto px-4 py-8">
         <header className="mb-8 relative">
-          <div className="absolute right-0 top-0 md:mr-4">
+          <div className="absolute right-0 top-0 md:mr-4 flex items-center gap-4">
+            <img 
+              src="/lovable-uploads/f2b1fed8-1816-4cb3-a92e-05a9a8b3efcd.png" 
+              alt="Datlaz Logo" 
+              className="h-8 md:h-10" 
+            />
             <img 
               src="https://abeeolica.org.br/wp-content/themes/abeeolica/dist/img/logotipo.svg" 
               alt="ABEEÓLICA Logo" 

@@ -1,11 +1,10 @@
-
 import { useEffect, useState } from "react";
 import PostIt from "./PostIt";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SERVICE_CATEGORIES } from "@/pages/AddDemand";
 import { Badge } from "@/components/ui/badge";
-import { Search } from "lucide-react";
+import { Search, Filter } from "lucide-react";
 
 interface Category {
   value: string;
@@ -126,20 +125,25 @@ const BulletinBoard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-4 rounded-lg shadow">
-        <div className="flex flex-col md:flex-row gap-4 mb-4">
+      <div className="bg-slate-800/50 backdrop-blur-sm p-6 rounded-xl shadow-xl border border-slate-700/50">
+        <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="relative flex-grow">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+            <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
             <Input
-              className="pl-9"
-              placeholder="Search opportunities..."
+              className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500/20"
+              placeholder="Pesquisar oportunidades..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           {(searchTerm || selectedCategory) && (
-            <Button variant="outline" onClick={clearFilters}>
-              Clear Filters
+            <Button 
+              variant="outline" 
+              onClick={clearFilters}
+              className="bg-slate-700/50 border-slate-600 text-slate-200 hover:bg-slate-600/50"
+            >
+              <Filter size={16} className="mr-2" />
+              Limpar Filtros
             </Button>
           )}
         </div>
@@ -148,11 +152,11 @@ const BulletinBoard = () => {
           {SERVICE_CATEGORIES.map((category) => (
             <Badge
               key={category.value}
-              className="cursor-pointer"
+              className="cursor-pointer transition-all hover:scale-105"
               style={{ 
-                backgroundColor: category.color, 
-                color: '#333',
-                border: selectedCategory === category.value ? '2px solid #333' : 'none'
+                backgroundColor: selectedCategory === category.value ? '#3b82f6' : 'rgba(51, 65, 85, 0.7)', 
+                color: '#fff',
+                border: selectedCategory === category.value ? '2px solid #60a5fa' : '1px solid rgba(71, 85, 105, 0.5)'
               }}
               onClick={() => handleCategoryClick(category.value)}
             >
@@ -170,8 +174,8 @@ const BulletinBoard = () => {
         </div>
       ) : (
         <div className="text-center py-12">
-          <h3 className="text-xl font-semibold text-gray-700">No opportunities found</h3>
-          <p className="text-gray-500 mt-2">Try adjusting your search filters</p>
+          <h3 className="text-xl font-semibold text-slate-200">Nenhuma oportunidade encontrada</h3>
+          <p className="text-slate-400 mt-2">Tente ajustar os filtros de pesquisa</p>
         </div>
       )}
     </div>

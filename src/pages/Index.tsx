@@ -9,8 +9,10 @@ const Index = () => {
   const navigate = useNavigate();
 
   const MainContent = () => (
-    <div className="min-h-screen bg-gradient-to-br from-amber-100 to-orange-50">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-800/20 via-slate-900/20 to-slate-900"></div>
+      
+      <div className="relative container mx-auto px-4 py-8">
         <header className="mb-8 relative">
           <div className="absolute right-0 top-0 md:mr-4 flex items-center gap-4">
             <img 
@@ -25,14 +27,14 @@ const Index = () => {
             />
           </div>
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">Hub de Negócios</h1>
-            <p className="text-gray-600 mb-6">Find and share business opportunities. Powered by ABEEÓLICA</p>
+            <h1 className="text-4xl font-bold text-white mb-2">Hub de Negócios</h1>
+            <p className="text-slate-300 mb-6">Sistema inteligente de gestão de fornecedores, contatos e oportunidades de negócios</p>
             <Button 
               onClick={() => navigate("/add-demand")}
-              className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2"
+              className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 shadow-lg border-0"
             >
               <Plus size={20} />
-              Add Demand
+              Adicionar Oportunidade
             </Button>
           </div>
         </header>

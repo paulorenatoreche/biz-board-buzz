@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -47,26 +48,25 @@ const PostIt = ({ post }: PostItProps) => {
   return (
     <>
       <Card 
-        className="bg-slate-800/70 backdrop-blur-sm hover:bg-slate-800/90 transition-all duration-300 hover:shadow-2xl border border-slate-700/50 cursor-pointer shadow-lg flex flex-col h-full hover:scale-[1.02]"
+        className="bg-white hover:bg-gray-50 transition-all duration-300 hover:shadow-xl border border-gray-200 cursor-pointer shadow-md flex flex-col h-full hover:scale-[1.02]"
         onClick={() => setShowDetails(true)}
       >
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-lg">
           <div className="flex justify-between items-start">
             <div>
               <h3 className="font-bold text-white text-lg">{post.companyName}</h3>
-              <p className="text-sm text-slate-300">{post.fullName}</p>
+              <p className="text-sm text-blue-100">{post.fullName}</p>
             </div>
             <Badge 
-              className="ml-2 shadow-sm" 
-              style={{ backgroundColor: post.category?.color || '#475569', color: '#fff' }}
+              className="ml-2 shadow-sm bg-white/20 text-white border-white/30 hover:bg-white/30" 
             >
               {post.category?.label || "Uncategorized"}
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="flex-grow">
-          <p className="text-slate-200 mb-4 whitespace-pre-wrap line-clamp-4">{post.description}</p>
-          <div className="text-xs text-slate-400 space-y-2">
+        <CardContent className="flex-grow bg-white">
+          <p className="text-gray-700 mb-4 whitespace-pre-wrap line-clamp-4">{post.description}</p>
+          <div className="text-xs text-gray-500 space-y-2">
             <div className="flex items-center gap-2">
               <Calendar size={12} />
               <span>Publicado: {format(new Date(post.createdAt), "dd MMM yyyy")}</span>
@@ -77,7 +77,7 @@ const PostIt = ({ post }: PostItProps) => {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="mt-auto">
+        <CardFooter className="mt-auto bg-white">
           <Button 
             onClick={(e) => {
               e.stopPropagation();
@@ -92,51 +92,51 @@ const PostIt = ({ post }: PostItProps) => {
       </Card>
 
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="bg-slate-800 border border-slate-700 max-w-xl text-white">
+        <DialogContent className="bg-white border border-gray-300 max-w-xl text-gray-900">
           <DialogHeader>
             <div className="flex justify-between items-center">
-              <DialogTitle className="text-xl font-bold text-white">{post.companyName}</DialogTitle>
+              <DialogTitle className="text-xl font-bold text-gray-900">{post.companyName}</DialogTitle>
               <Badge 
-                style={{ backgroundColor: post.category?.color || '#475569', color: '#fff' }}
+                className="bg-blue-100 text-blue-700 border-blue-200"
               >
                 {post.category?.label || "Uncategorized"}
               </Badge>
             </div>
-            <DialogDescription className="text-slate-300">
+            <DialogDescription className="text-gray-600">
               Publicado por {post.fullName}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold text-slate-200 mb-2">Descrição:</h3>
-              <p className="text-slate-300 whitespace-pre-wrap">{post.description}</p>
+              <h3 className="font-semibold text-gray-800 mb-2">Descrição:</h3>
+              <p className="text-gray-700 whitespace-pre-wrap">{post.description}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h3 className="font-semibold text-slate-200 mb-2">Informações de Contato:</h3>
+                <h3 className="font-semibold text-gray-800 mb-2">Informações de Contato:</h3>
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-slate-300">
+                  <div className="flex items-center gap-2 text-gray-700">
                     <Mail size={16} />
                     <span>{post.email}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-slate-300">
+                  <div className="flex items-center gap-2 text-gray-700">
                     <Phone size={16} />
                     <span>{post.phone}</span>
                   </div>
                 </div>
               </div>
               <div>
-                <h3 className="font-semibold text-slate-200 mb-2">Datas:</h3>
+                <h3 className="font-semibold text-gray-800 mb-2">Datas:</h3>
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-slate-300">
+                  <div className="flex items-center gap-2 text-gray-700">
                     <Calendar size={16} />
                     <span>Publicado: {format(new Date(post.createdAt), "dd MMM yyyy")}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-slate-300">
+                  <div className="flex items-center gap-2 text-gray-700">
                     <Clock size={16} />
                     <span>Expira: {format(new Date(post.expiresAt), "dd MMM yyyy")}</span>
                   </div>
-                  <p className="text-slate-200 font-semibold">Expira em: {daysRemaining()} dias</p>
+                  <p className="text-gray-800 font-semibold">Expira em: {daysRemaining()} dias</p>
                 </div>
               </div>
             </div>

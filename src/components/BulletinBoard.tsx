@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import PostIt from "./PostIt";
 import { Input } from "@/components/ui/input";
@@ -125,73 +124,79 @@ const BulletinBoard = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="relative flex-grow">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-            <Input
-              className="pl-10 bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500/20"
-              placeholder="Pesquisar oportunidades..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          {(searchTerm || selectedCategory) && (
-            <Button 
-              variant="outline" 
-              onClick={clearFilters}
-              className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-            >
-              <Filter size={16} className="mr-2" />
-              Limpar Filtros
-            </Button>
-          )}
-        </div>
-        
-        <div className="flex flex-wrap gap-2">
-          {SERVICE_CATEGORIES.map((category, index) => {
-            const colors = [
-              'bg-blue-100 text-blue-700 border-blue-200',
-              'bg-green-100 text-green-700 border-green-200',
-              'bg-purple-100 text-purple-700 border-purple-200',
-              'bg-orange-100 text-orange-700 border-orange-200',
-              'bg-pink-100 text-pink-700 border-pink-200',
-              'bg-indigo-100 text-indigo-700 border-indigo-200',
-              'bg-yellow-100 text-yellow-700 border-yellow-200',
-              'bg-red-100 text-red-700 border-red-200'
-            ];
-            const colorClass = colors[index % colors.length];
-            
-            return (
-              <Badge
-                key={category.value}
-                className={`cursor-pointer transition-all hover:scale-105 border ${
-                  selectedCategory === category.value 
-                    ? 'bg-blue-600 text-white border-blue-600' 
-                    : colorClass
-                }`}
-                onClick={() => handleCategoryClick(category.value)}
+    <div className="relative">
+      {/* Caixa de pesquisa e filtros - posicionada sobre a linha divisória */}
+      <div className="relative -top-16 mb-8 z-20">
+        <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200 mx-auto max-w-4xl">
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="relative flex-grow">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Input
+                className="pl-10 bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500/20"
+                placeholder="Pesquisar oportunidades..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            {(searchTerm || selectedCategory) && (
+              <Button 
+                variant="outline" 
+                onClick={clearFilters}
+                className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
               >
-                {category.label}
-              </Badge>
-            );
-          })}
+                <Filter size={16} className="mr-2" />
+                Limpar Filtros
+              </Button>
+            )}
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            {SERVICE_CATEGORIES.map((category, index) => {
+              const colors = [
+                'bg-blue-100 text-blue-700 border-blue-200',
+                'bg-green-100 text-green-700 border-green-200',
+                'bg-purple-100 text-purple-700 border-purple-200',
+                'bg-orange-100 text-orange-700 border-orange-200',
+                'bg-pink-100 text-pink-700 border-pink-200',
+                'bg-indigo-100 text-indigo-700 border-indigo-200',
+                'bg-yellow-100 text-yellow-700 border-yellow-200',
+                'bg-red-100 text-red-700 border-red-200'
+              ];
+              const colorClass = colors[index % colors.length];
+              
+              return (
+                <Badge
+                  key={category.value}
+                  className={`cursor-pointer transition-all hover:scale-105 border ${
+                    selectedCategory === category.value 
+                      ? 'bg-blue-600 text-white border-blue-600' 
+                      : colorClass
+                  }`}
+                  onClick={() => handleCategoryClick(category.value)}
+                >
+                  {category.label}
+                </Badge>
+              );
+            })}
+          </div>
         </div>
       </div>
       
-      {filteredPosts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPosts.map((post) => (
-            <PostIt key={post.id} post={post} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12">
-          <h3 className="text-xl font-semibold text-gray-700">Nenhuma oportunidade encontrada</h3>
-          <p className="text-gray-500 mt-2">Tente ajustar os filtros de pesquisa</p>
-        </div>
-      )}
+      {/* Conteúdo dos posts */}
+      <div className="space-y-6">
+        {filteredPosts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredPosts.map((post) => (
+              <PostIt key={post.id} post={post} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <h3 className="text-xl font-semibold text-gray-700">Nenhuma oportunidade encontrada</h3>
+            <p className="text-gray-500 mt-2">Tente ajustar os filtros de pesquisa</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

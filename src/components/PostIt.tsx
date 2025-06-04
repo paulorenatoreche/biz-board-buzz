@@ -51,7 +51,7 @@ const PostIt = ({ post }: PostItProps) => {
         className="bg-white hover:bg-gray-50 transition-all duration-300 hover:shadow-xl border border-gray-200 cursor-pointer shadow-md flex flex-col h-full hover:scale-[1.02]"
         onClick={() => setShowDetails(true)}
       >
-        <CardHeader className="pb-3 bg-slate-800 rounded-t-lg">
+        <CardHeader className="pb-3 bg-slate-700 rounded-t-lg">
           <div className="flex justify-between items-start">
             <div>
               <h3 className="font-bold text-white text-lg">{post.companyName}</h3>
@@ -83,7 +83,7 @@ const PostIt = ({ post }: PostItProps) => {
               e.stopPropagation();
               handleContact();
             }}
-            className="w-full bg-slate-800 hover:bg-blue-700 text-white border-0 shadow-lg"
+            className="w-full bg-slate-500 hover:bg-blue-700 text-white border-0 shadow-lg"
           >
             <Mail size={16} className="mr-2" />
             Entrar em Contato

@@ -10,7 +10,7 @@ const Index = () => {
   const MainContent = () => (
     <div className="min-h-screen bg-white">
       {/* Blue header section */}
-      <div className="bg-gradient-to-r from-custom-slate via-custom-slate to-custom-slate text-white pb-20">
+      <div className="bg-gradient-to-r bg-slate-800 text-white pb-20">
         <div className="container mx-auto px-4 py-8">
           <header className="mb-8 relative">
             <div className="absolute right-0 top-0 md:mr-4 flex gap-4">

@@ -21,11 +21,11 @@ const Index = () => {
                   className="h-8 md:h-10" 
                 />
               </div>
-              <div className="flex items-center" style={{ marginTop: '5.1px' }}>
+              <div className="flex items-center" style={{ marginTop: '12px' }}>
                 <img 
-                  src="https://abeeolica.org.br/wp-content/themes/abeeolica/dist/img/logotipo.svg" 
+                  src="/public/lovable-uploads/abeeolica_logo_br.png" 
                   alt="ABEEÓLICA Logo" 
-                  className="h-8 md:h-10" 
+                  className="h-8 md:h-14" 
                 />
               </div>
             </div>

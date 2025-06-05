@@ -127,12 +127,12 @@ const BulletinBoard = () => {
     <div className="relative">
       {/* Caixa de pesquisa e filtros - posicionada sobre a linha divisória */}
       <div className="relative -top-8 mb-8 z-40">
-        <div className="bg-white/95 backdrop-blur-lg p-6 rounded-xl shadow-2xl border border-white/20 mx-auto max-w-4xl">
+        <div className="bg-white p-6 rounded-xl shadow-2xl border border-white/20 mx-auto max-w-4xl">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-grow">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
               <Input
-                className="pl-10 bg-white/80 backdrop-blur-sm border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500/20 h-12 rounded-lg shadow-sm"
+                className="pl-10 bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500/20 h-12 rounded-lg shadow-sm"
                 placeholder="Pesquisar oportunidades..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -142,7 +142,7 @@ const BulletinBoard = () => {
               <Button 
                 variant="outline" 
                 onClick={clearFilters}
-                className="bg-white/80 backdrop-blur-sm border-gray-300 text-gray-700 hover:bg-white hover:scale-105 transition-all duration-200 h-12 rounded-lg shadow-sm"
+                className="bg-white border-gray-300 text-gray-700 hover:bg-white hover:scale-105  h-12 rounded-lg shadow-sm"
               >
                 <Filter size={16} className="mr-2" />
                 Limpar Filtros
@@ -192,7 +192,7 @@ const BulletinBoard = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-8 shadow-lg border border-gray-200 max-w-md mx-auto">
+            <div className="bg-white  rounded-xl p-8 shadow-lg border border-gray-200 max-w-md mx-auto">
               <h3 className="text-xl font-semibold text-gray-700 mb-2">Nenhuma oportunidade encontrada</h3>
               <p className="text-gray-500">Tente ajustar os filtros de pesquisa</p>
             </div>

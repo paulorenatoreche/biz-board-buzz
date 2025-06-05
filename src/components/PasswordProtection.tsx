@@ -42,8 +42,8 @@ const PasswordProtection = ({ children, correctPassword }: PasswordProtectionPro
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-1/2 -right-1/2 w-96 h-96 rounded-full opacity-10 bg-white animate-pulse"></div>
         <div className="absolute -bottom-1/2 -left-1/2 w-80 h-80 rounded-full opacity-5 bg-white"></div>
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full opacity-20 bg-white/20 blur-xl"></div>
-        <div className="absolute bottom-1/3 right-1/3 w-24 h-24 rounded-full opacity-15 bg-white/10 blur-lg"></div>
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full opacity-20 bg-white"></div>
+        <div className="absolute bottom-1/3 right-1/3 w-24 h-24 rounded-full opacity-15 bg-white"></div>
       </div>
 
       {/* Logos fixas nos cantos superiores */}
@@ -62,7 +62,7 @@ const PasswordProtection = ({ children, correctPassword }: PasswordProtectionPro
         />
       </div>
 
-      <Card className="w-full max-w-md mx-4 bg-white/95 backdrop-blur-lg border-0 shadow-2xl relative z-10">
+      <Card className="w-full max-w-md mx-4 bg-white border-0 shadow-2xl relative z-10">
         <CardHeader className="text-center pb-6 pt-10">
           <div className="mx-auto flex items-center justify-center mb-6">
             <Handshake style={{ color: 'rgb(60, 71, 157)' }} size={45}/>
@@ -78,7 +78,7 @@ const PasswordProtection = ({ children, correctPassword }: PasswordProtectionPro
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Digite a senha"
-                className="pr-10 bg-gray-50 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 h-12 rounded-lg transition-all duration-200"
+                className="pr-10 bg-gray-50 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 h-12 rounded-lg "
               />
               <button
                 type="button"
@@ -90,7 +90,7 @@ const PasswordProtection = ({ children, correctPassword }: PasswordProtectionPro
             </div>
             <Button
               type="submit"
-              className="w-full h-12 text-white border-0 shadow-lg rounded-lg font-semibold text-base transition-all duration-200 hover:shadow-xl hover:scale-[1.02]"
+              className="w-full h-12 text-white border-0 shadow-lg rounded-lg font-semibold text-base  hover:shadow-xl hover:scale-[1.02]"
               style={{
                 background: 'linear-gradient(135deg, rgb(60, 71, 157), rgb(45, 55, 135))'
               }}

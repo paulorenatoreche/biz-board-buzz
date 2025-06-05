@@ -47,7 +47,7 @@ const PostIt = ({ post }: PostItProps) => {
   return (
     <>
       <Card 
-        className="bg-white/95 backdrop-blur-lg hover:bg-white transition-all duration-300 hover:shadow-2xl border border-white/20 cursor-pointer shadow-lg flex flex-col h-full hover:scale-[1.02]"
+        className="bg-white/95 hover:bg-white hover:shadow-2xl border border-white/20 cursor-pointer shadow-lg flex flex-col h-full hover:scale-[1.02]"
         onClick={() => setShowDetails(true)}
       >
         <CardHeader className="pb-3 rounded-t-lg" style={{ background: 'rgb(58, 197, 225)' }}>
@@ -57,13 +57,13 @@ const PostIt = ({ post }: PostItProps) => {
               <p className="text-sm text-blue-100">{post.fullName}</p>
             </div>
             <Badge 
-              className="ml-2 shadow-sm bg-white/20 text-white border-white/30 hover:bg-white/30 backdrop-blur-sm" 
+              className="ml-2 shadow-sm bg-white/20 text-white border-white/30 hover:bg-white/30" 
             >
               {post.category?.label || "Uncategorized"}
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="flex-grow bg-white/95 backdrop-blur-sm">
+        <CardContent className="flex-grow bg-white/95">
           <p className="text-gray-700 mb-4 whitespace-pre-wrap line-clamp-4">{post.description}</p>
           <div className="text-xs text-gray-500 space-y-2">
             <div className="flex items-center gap-2">
@@ -76,13 +76,13 @@ const PostIt = ({ post }: PostItProps) => {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="mt-auto bg-white/95 backdrop-blur-sm">
+        <CardFooter className="mt-auto bg-white/95">
           <Button 
             onClick={(e) => {
               e.stopPropagation();
               handleContact();
             }}
-            className="w-full text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 rounded-lg h-11"
+            className="w-full text-white border-0 shadow-lg hover:shadow-xl hover:scale-105  rounded-lg h-11"
             style={{
               background: 'rgb(138, 198, 64)'
             }}
@@ -94,7 +94,7 @@ const PostIt = ({ post }: PostItProps) => {
       </Card>
 
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="bg-white/95 backdrop-blur-lg border border-white/20 shadow-2xl max-w-xl text-gray-900">
+        <DialogContent className="bg-white/95 border border-white/20 shadow-2xl max-w-xl text-gray-900">
           <DialogHeader>
             <div className="flex justify-between items-center">
               <DialogTitle className="text-xl font-bold text-gray-900">{post.companyName}</DialogTitle>

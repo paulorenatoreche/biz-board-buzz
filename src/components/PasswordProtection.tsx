@@ -36,22 +36,18 @@ const PasswordProtection = ({ children, correctPassword }: PasswordProtectionPro
   }
 
   return (
-    
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgb(60, 71, 157) 0%, rgb(45, 55, 135) 50%, rgb(30, 40, 115) 100%)' }}>
-      {/* Geometric background elements */}
-      
-
       {/* Logos fixas nos cantos superiores */}
       <div className="fixed top-6 left-6 z-20" style={{ transform: 'translateY(12px)' }}>
         <img
-          src="/public/lovable-uploads/af_datlaz_logo_br.png"
+          src="/lovable-uploads/af_datlaz_logo_br.png"
           alt="Datlaz Logo"
           className="h-8 md:h-10 drop-shadow-lg"
         />
       </div>
       <div className="fixed top-3 right-6 z-20" style={{ marginTop: '5.1px' }}>
         <img
-          src="/public/lovable-uploads/abeeolica_logo_br.png"
+          src="/lovable-uploads/abeeolica_logo_br.png"
           alt="ABEEÓLICA Logo"
           className="h-8 md:h-14 drop-shadow-lg"
         />

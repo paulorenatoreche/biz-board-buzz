@@ -63,7 +63,7 @@ const PostIt = ({ post }: PostItProps) => {
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="flex-grow bg-white/95">
+        <CardContent className="flex-grow bg-white/95 pt-3">
           <p className="text-gray-700 mb-4 whitespace-pre-wrap line-clamp-4">{post.description}</p>
           <div className="text-xs text-gray-500 space-y-2">
             <div className="flex items-center gap-2">

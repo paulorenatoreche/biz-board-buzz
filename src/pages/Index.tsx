@@ -15,14 +15,14 @@ const Index = () => {
       {/* Logos fixas nos cantos superiores */}
       <div className="fixed top-4 left-6 z-20" style={{ transform: 'translateY(12px)' }}>
         <img
-          src="/public/lovable-uploads/af_datlaz_logo_br.png"
+          src="/lovable-uploads/af_datlaz_logo_br.png"
           alt="Datlaz Logo"
           className="h-8 md:h-10 drop-shadow-lg"
         />
       </div>
       <div className="fixed top-3 right-6 z-20" style={{ marginTop: '5.1px' }}>
         <img
-          src="/public/lovable-uploads/abeeolica_logo_br.png"
+          src="/lovable-uploads/abeeolica_logo_br.png"
           alt="ABEEÓLICA Logo"
           className="h-8 md:h-14 drop-shadow-lg"
         />

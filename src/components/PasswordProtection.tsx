@@ -39,12 +39,7 @@ const PasswordProtection = ({ children, correctPassword }: PasswordProtectionPro
     
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgb(60, 71, 157) 0%, rgb(45, 55, 135) 50%, rgb(30, 40, 115) 100%)' }}>
       {/* Geometric background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-1/2 -right-1/2 w-96 h-96 rounded-full opacity-10 bg-white animate-pulse"></div>
-        <div className="absolute -bottom-1/2 -left-1/2 w-80 h-80 rounded-full opacity-5 bg-white"></div>
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full opacity-20 bg-white"></div>
-        <div className="absolute bottom-1/3 right-1/3 w-24 h-24 rounded-full opacity-15 bg-white"></div>
-      </div>
+      
 
       {/* Logos fixas nos cantos superiores */}
       <div className="fixed top-6 left-6 z-20" style={{ transform: 'translateY(12px)' }}>

@@ -13,7 +13,7 @@ const Index = () => {
       
 
       {/* Logos fixas nos cantos superiores */}
-      <div className="fixed top-4 left-6 z-20" style={{ transform: 'translateY(12px)' }}>
+      <div className="fixed top-5 left-6 z-20" style={{ transform: 'translateY(12px)' }}>
         <img
           src="/lovable-uploads/af_datlaz_logo_br.png"
           alt="Datlaz Logo"

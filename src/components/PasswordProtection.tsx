@@ -36,11 +36,7 @@ const PasswordProtection = ({ children, correctPassword }: PasswordProtectionPro
   }
 
   return (
-    
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgb(60, 71, 157) 0%, rgb(45, 55, 135) 50%, rgb(30, 40, 115) 100%)' }}>
-      {/* Geometric background elements */}
-      
-
       {/* Logos fixas nos cantos superiores */}
       <div className="fixed top-6 left-6 z-20" style={{ transform: 'translateY(12px)' }}>
         <img

@@ -8,38 +8,46 @@ const Index = () => {
   const navigate = useNavigate();
 
   const MainContent = () => (
-    <div className="min-h-screen bg-white">
-      {/* Blue header section */}
-      <div className="bg-gradient-to-r bg-slate-800 text-white pb-20">
-        <div className="container mx-auto px-4 py-8">
-          <header className="mb-8 relative">
-            <div className="absolute right-0 top-0 md:mr-4 flex gap-4">
-              <div className="flex items-center" style={{ transform: 'translateY(12px)' }}>
-                <img 
-                  src="/public/lovable-uploads/af_datlaz_logo_br.png" 
-                  alt="Datlaz Logo" 
-                  className="h-8 md:h-10" 
-                />
-              </div>
-              <div className="flex items-center" style={{ marginTop: '12px' }}>
-                <img 
-                  src="/public/lovable-uploads/abeeolica_logo_br.png" 
-                  alt="ABEEÓLICA Logo" 
-                  className="h-8 md:h-14" 
-                />
-              </div>
-            </div>
+    <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgb(60, 71, 157) 0%, rgb(45, 55, 135) 50%, rgb(30, 40, 115) 100%)' }}>
+      {/* Geometric background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-1/2 -right-1/2 w-96 h-96 rounded-full opacity-10 bg-white animate-pulse"></div>
+        <div className="absolute -bottom-1/2 -left-1/2 w-80 h-80 rounded-full opacity-5 bg-white"></div>
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full opacity-20 bg-white/20 blur-xl"></div>
+        <div className="absolute bottom-1/3 right-1/3 w-24 h-24 rounded-full opacity-15 bg-white/10 blur-lg"></div>
+      </div>
+
+      {/* Logos fixas nos cantos superiores */}
+      <div className="fixed top-4 left-6 z-20" style={{ transform: 'translateY(12px)' }}>
+        <img
+          src="/public/lovable-uploads/af_datlaz_logo_br.png"
+          alt="Datlaz Logo"
+          className="h-8 md:h-10 drop-shadow-lg"
+        />
+      </div>
+      <div className="fixed top-3 right-6 z-20" style={{ marginTop: '5.1px' }}>
+        <img
+          src="/public/lovable-uploads/abeeolica_logo_br.png"
+          alt="ABEEÓLICA Logo"
+          className="h-8 md:h-14 drop-shadow-lg"
+        />
+      </div>
+
+      {/* Header section */}
+      <div className="relative z-10 text-white">
+        <div className="container mx-auto px-4 py-12">
+          <header className="mb-8 pt-8">
             <div className="text-center">
-              <h1 className="text-4xl font-bold text-white mb-2">Hub de Negócios</h1>
-              <p className="text-blue-100 mb-6">Encontre e compartilhe oportunidades de negócios. Desenvolvido pela ABEEÓLICA</p>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">Hub de Negócios</h1>
+              <p className="text-white/80 mb-6 text-lg">Encontre e compartilhe oportunidades de negócios. Desenvolvido pela ABEEÓLICA</p>
             </div>
           </header>
           
           {/* Botão posicionado para alinhar com a caixa de pesquisa */}
-          <div className="max-w-4xl mx-auto flex justify-start relative -bottom-8 z-10">
+          <div className="max-w-4xl mx-auto flex justify-start relative z-30">
             <Button 
               onClick={() => navigate("/add-demand")}
-              className="bg-white text-blue-600 hover:bg-blue-50 flex items-center gap-2 shadow-lg border-0 font-semibold"
+              className="bg-white/95 backdrop-blur-lg text-blue-600 hover:bg-white hover:scale-105 flex items-center gap-2 shadow-2xl border-0 font-semibold h-12 px-6 rounded-lg transition-all duration-200"
             >
               <Plus size={20} />
               Adicionar Oportunidade
@@ -48,8 +56,8 @@ const Index = () => {
         </div>
       </div>
       
-      {/* White content section */}
-      <div className="bg-white relative">
+      {/* White content section with backdrop */}
+      <div className="bg-white/95 backdrop-blur-lg relative min-h-screen">
         <div className="container mx-auto px-4">
           <BulletinBoard />
         </div>

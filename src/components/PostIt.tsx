@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -54,12 +55,12 @@ const PostIt = ({ post }: PostItProps) => {
   };
 
   // Function to truncate company name if too long - reduced max length for consistency
-  const truncateCompanyName = (name: string, maxLength: number = 25) => {
+  const truncateCompanyName = (name: string, maxLength: number = 15) => {
     if (name.length <= maxLength) return name;
     return name.substring(0, maxLength) + "...";
   };
 
-  const isCompanyNameLong = post.companyName.length > 25;
+  const isCompanyNameLong = post.companyName.length > 15;
 
   return (
     <TooltipProvider>
@@ -149,9 +150,11 @@ const PostIt = ({ post }: PostItProps) => {
         <DialogContent className="bg-white/95 border border-white/20 shadow-2xl max-w-xl text-gray-900">
           <DialogHeader>
             <div className="flex justify-between items-center">
-              <DialogTitle className="text-xl font-bold text-gray-900">{post.companyName}</DialogTitle>
+              <DialogTitle className="text-xl font-bold text-gray-900 break-words overflow-wrap-anywhere pr-2">
+                {post.companyName}
+              </DialogTitle>
               <Badge 
-                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm"
+                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm flex-shrink-0"
               >
                 {post.category?.label || "Uncategorized"}
               </Badge>
@@ -163,18 +166,18 @@ const PostIt = ({ post }: PostItProps) => {
           <div className="space-y-4">
             <div>
               <h3 className="font-semibold text-gray-800 mb-2">Descrição:</h3>
-              <p className="text-gray-700 whitespace-pre-wrap">{post.description}</p>
+              <p className="text-gray-700 whitespace-pre-wrap break-words">{post.description}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <h3 className="font-semibold text-gray-800 mb-2">Informações de Contato:</h3>
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Mail size={16} />
+                  <div className="flex items-center gap-2 text-gray-700 break-all">
+                    <Mail size={16} className="flex-shrink-0" />
                     <span>{post.email}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Phone size={16} />
+                  <div className="flex items-center gap-2 text-gray-700 break-all">
+                    <Phone size={16} className="flex-shrink-0" />
                     <span>{post.phone}</span>
                   </div>
                 </div>

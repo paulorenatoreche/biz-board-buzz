@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +36,6 @@ interface PostItProps {
 
 const PostIt = ({ post }: PostItProps) => {
   const [showDetails, setShowDetails] = useState(false);
-  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const navigate = useNavigate();
 
   const handleContact = () => {
@@ -60,8 +60,7 @@ const PostIt = ({ post }: PostItProps) => {
       // Show success message
       toast.success("Publicação excluída com sucesso!");
       
-      // Close dialogs and refresh the page to update the list
-      setShowDeleteAlert(false);
+      // Close dialog and refresh the page to update the list
       setShowDetails(false);
       window.location.reload();
     }
@@ -200,21 +199,42 @@ const PostIt = ({ post }: PostItProps) => {
                 >
                   {post.category?.label || "Uncategorized"}
                 </Badge>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        className="w-8 h-8 p-0 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 hover:text-red-700 shadow-sm flex-shrink-0 hover:scale-110 transition-transform duration-200 mt-4"
-                        variant="outline"
+                <AlertDialog>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          className="w-8 h-8 p-0 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 hover:text-red-700 shadow-sm flex-shrink-0 hover:scale-110 transition-transform duration-200 mt-4"
+                          variant="outline"
+                        >
+                          <Trash size={14} />
+                        </Button>
+                      </AlertDialogTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Excluir</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <AlertDialogContent className="bg-white border border-gray-200 shadow-2xl">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-gray-900">Tem certeza que deseja excluir?</AlertDialogTitle>
+                      <AlertDialogDescription className="text-gray-600">
+                        Esta ação não pode ser desfeita. A publicação será permanentemente removida do quadro de oportunidades.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
+                        Cancelar
+                      </AlertDialogCancel>
+                      <AlertDialogAction 
+                        onClick={handleDelete}
+                        className="bg-red-600 text-white hover:bg-red-700"
                       >
-                        <Trash size={14} />
-                      </Button>
-                    </AlertDialogTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Excluir</p>
-                  </TooltipContent>
-                </Tooltip>
+                        Excluir
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
           </DialogHeader>
@@ -287,28 +307,6 @@ const PostIt = ({ post }: PostItProps) => {
           </div>
         </DialogContent>
       </Dialog>
-
-      <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
-        <AlertDialogContent className="bg-white border border-gray-200 shadow-2xl">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-gray-900">Tem certeza que deseja excluir?</AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-600">
-              Esta ação não pode ser desfeita. A publicação será permanentemente removida do quadro de oportunidades.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
-              Cancelar
-            </AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleDelete}
-              className="bg-red-600 text-white hover:bg-red-700"
-            >
-              Excluir
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </TooltipProvider>
   );
 };

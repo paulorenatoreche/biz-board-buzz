@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -117,7 +116,7 @@ const PostIt = ({ post }: PostItProps) => {
           </div>
         </CardHeader>
         <CardContent className="flex-grow bg-white/95 pt-3">
-          <p className="text-gray-700 mb-4 whitespace-pre-wrap line-clamp-4">{post.description}</p>
+          <p className="text-gray-700 mb-4 whitespace-pre-wrap break-words overflow-wrap-anywhere hyphens-auto line-clamp-4">{post.description}</p>
           <div className="text-xs text-gray-500 space-y-2">
             <div className="flex items-center gap-2">
               <Calendar size={12} />
@@ -169,7 +168,7 @@ const PostIt = ({ post }: PostItProps) => {
             <div>
               <h3 className="font-semibold text-gray-800 mb-3">Descrição:</h3>
               <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <p className="text-gray-700 whitespace-pre-wrap break-words leading-relaxed hyphens-auto overflow-wrap-anywhere">
+                <p className="text-gray-700 whitespace-pre-wrap break-words leading-relaxed hyphens-auto overflow-wrap-anywhere word-break-break-word">
                   {post.description}
                 </p>
               </div>

@@ -21,6 +21,7 @@ export const SERVICE_CATEGORIES = [
   { value: "equipment", label: "Equipamentos", color: "#FDE1D3" },
   { value: "o-and-m", label: "O&M", color: "#D3E4FD" },
   { value: "training-courses", label: "Treinamentos & Cursos", color: "#F1F0FB" },
+  { value: "other", label: "Outro", color: "#E5E7EB" },
 ];
 
 interface FormData {
@@ -30,11 +31,13 @@ interface FormData {
   companyName: string;
   description: string;
   category: string;
+  customCategory: string;
 }
 
 const AddDemand = () => {
   const navigate = useNavigate();
   const [isSending, setIsSending] = useState(false);
+  const [showCustomCategory, setShowCustomCategory] = useState(false);
   
   const form = useForm<FormData>({
     defaultValues: {
@@ -44,8 +47,21 @@ const AddDemand = () => {
       companyName: "",
       description: "",
       category: "",
+      customCategory: "",
     }
   });
+
+  const selectedCategory = form.watch("category");
+
+  const handleCategoryChange = (value: string) => {
+    form.setValue("category", value);
+    if (value === "other") {
+      setShowCustomCategory(true);
+    } else {
+      setShowCustomCategory(false);
+      form.setValue("customCategory", "");
+    }
+  };
 
   const handleSubmit = async (data: FormData) => {
     setIsSending(true);
@@ -54,8 +70,23 @@ const AddDemand = () => {
       // Generate a unique ID for the post
       const postId = uuidv4();
       
-      // Find the selected category object
-      const selectedCategory = SERVICE_CATEGORIES.find(cat => cat.value === data.category);
+      // Handle custom category
+      let finalCategory;
+      if (data.category === "other" && data.customCategory.trim()) {
+        finalCategory = {
+          value: `custom-${data.customCategory.toLowerCase().replace(/\s+/g, '-')}`,
+          label: data.customCategory.trim(),
+          color: "#E5E7EB",
+        };
+      } else {
+        // Find the selected category object
+        const selectedCategory = SERVICE_CATEGORIES.find(cat => cat.value === data.category);
+        finalCategory = {
+          value: data.category,
+          label: selectedCategory?.label || "",
+          color: selectedCategory?.color || "#F1F0FB",
+        };
+      }
       
       // Create the new post object with all required fields
       const newPost = {
@@ -65,11 +96,7 @@ const AddDemand = () => {
         description: data.description,
         email: data.email,
         phone: data.phone,
-        category: {
-          value: data.category,
-          label: selectedCategory?.label || "",
-          color: selectedCategory?.color || "#F1F0FB",
-        },
+        category: finalCategory,
         createdAt: new Date().toISOString(),
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
       };
@@ -109,9 +136,6 @@ const AddDemand = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgb(60, 71, 157) 0%, rgb(45, 55, 135) 50%, rgb(30, 40, 115) 100%)' }}>
-      {/* Geometric background elements */}
-      
-
       {/* Header section */}
       <div className="relative z-10 text-white">
         <div className="container mx-auto px-4 py-8">
@@ -223,7 +247,7 @@ const AddDemand = () => {
                       <FormItem>
                         <FormLabel className="text-gray-700 font-semibold">Categoria do Serviço</FormLabel>
                         <Select 
-                          onValueChange={field.onChange} 
+                          onValueChange={handleCategoryChange} 
                           defaultValue={field.value}
                           required
                         >
@@ -243,6 +267,26 @@ const AddDemand = () => {
                       </FormItem>
                     )}
                   />
+
+                  {showCustomCategory && (
+                    <FormField
+                      control={form.control}
+                      name="customCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 font-semibold">Categoria Personalizada</FormLabel>
+                          <FormControl>
+                            <Input 
+                              required={selectedCategory === "other"}
+                              {...field} 
+                              className="bg-gray-50 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 h-12 rounded-lg"
+                              placeholder="Digite sua categoria personalizada"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  )}
                   
                   <FormField
                     control={form.control}

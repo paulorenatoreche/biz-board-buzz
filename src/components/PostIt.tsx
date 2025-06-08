@@ -5,9 +5,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useState } from "react";
-import { Mail, Phone, Calendar, Clock, Edit } from "lucide-react";
+import { Mail, Phone, Calendar, Clock, Edit, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "@/components/ui/sonner";
 
 interface Category {
   value: string;
@@ -33,6 +35,7 @@ interface PostItProps {
 
 const PostIt = ({ post }: PostItProps) => {
   const [showDetails, setShowDetails] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const navigate = useNavigate();
 
   const handleContact = () => {
@@ -42,6 +45,26 @@ const PostIt = ({ post }: PostItProps) => {
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigate(`/edit-demand/${post.id}`);
+  };
+
+  const handleDelete = () => {
+    // Get posts from localStorage
+    const storedPosts = localStorage.getItem('bulletinPosts');
+    if (storedPosts) {
+      const posts = JSON.parse(storedPosts);
+      // Filter out the deleted post
+      const updatedPosts = posts.filter((p: Post) => p.id !== post.id);
+      // Update localStorage
+      localStorage.setItem('bulletinPosts', JSON.stringify(updatedPosts));
+      
+      // Show success message
+      toast.success("Publicação excluída com sucesso!");
+      
+      // Close dialogs and refresh the page to update the list
+      setShowDeleteAlert(false);
+      setShowDetails(false);
+      window.location.reload();
+    }
   };
 
   // Calculate days remaining until expiration
@@ -171,11 +194,28 @@ const PostIt = ({ post }: PostItProps) => {
                   Publicado por {post.fullName}
                 </DialogDescription>
               </div>
-              <Badge 
-                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm self-start flex-shrink-0 mt-4 hover:bg-gray-300 hover:text-gray-600"
-              >
-                {post.category?.label || "Uncategorized"}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge 
+                  className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm self-start flex-shrink-0 mt-4 hover:bg-gray-100 hover:text-gray-600"
+                >
+                  {post.category?.label || "Uncategorized"}
+                </Badge>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        className="w-8 h-8 p-0 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 hover:text-red-700 shadow-sm flex-shrink-0 hover:scale-110 transition-transform duration-200 mt-4"
+                        variant="outline"
+                      >
+                        <Trash size={14} />
+                      </Button>
+                    </AlertDialogTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Excluir</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
           </DialogHeader>
           <div className="space-y-6 mt-4">
@@ -247,6 +287,28 @@ const PostIt = ({ post }: PostItProps) => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
+        <AlertDialogContent className="bg-white border border-gray-200 shadow-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-gray-900">Tem certeza que deseja excluir?</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600">
+              Esta ação não pode ser desfeita. A publicação será permanentemente removida do quadro de oportunidades.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDelete}
+              className="bg-red-600 text-white hover:bg-red-700"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </TooltipProvider>
   );
 };

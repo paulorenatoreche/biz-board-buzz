@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -32,9 +31,10 @@ interface Post {
 
 interface PostItProps {
   post: Post;
+  onDelete?: (postId: string) => void; // Nova prop para callback de exclusão
 }
 
-const PostIt = ({ post }: PostItProps) => {
+const PostIt = ({ post, onDelete }: PostItProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const navigate = useNavigate();
 
@@ -48,21 +48,30 @@ const PostIt = ({ post }: PostItProps) => {
   };
 
   const handleDelete = () => {
-    // Get posts from localStorage
-    const storedPosts = localStorage.getItem('bulletinPosts');
-    if (storedPosts) {
-      const posts = JSON.parse(storedPosts);
-      // Filter out the deleted post
-      const updatedPosts = posts.filter((p: Post) => p.id !== post.id);
-      // Update localStorage
-      localStorage.setItem('bulletinPosts', JSON.stringify(updatedPosts));
-      
-      // Show success message
-      toast.success("Publicação excluída com sucesso!");
-      
-      // Close dialog and refresh the page to update the list
-      setShowDetails(false);
-      window.location.reload();
+    try {
+      // Get posts from localStorage
+      const storedPosts = localStorage.getItem('bulletinPosts');
+      if (storedPosts) {
+        const posts = JSON.parse(storedPosts);
+        // Filter out the deleted post
+        const updatedPosts = posts.filter((p: Post) => p.id !== post.id);
+        // Update localStorage
+        localStorage.setItem('bulletinPosts', JSON.stringify(updatedPosts));
+        
+        // Show success message
+        toast.success("Publicação excluída com sucesso!");
+        
+        // Close dialog
+        setShowDetails(false);
+        
+        // Chama o callback para atualizar a lista no componente pai
+        if (onDelete) {
+          onDelete(post.id);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao excluir publicação:', error);
+      toast.error("Erro ao excluir publicação. Tente novamente.");
     }
   };
 

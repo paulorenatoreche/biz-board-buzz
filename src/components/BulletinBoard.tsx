@@ -144,6 +144,10 @@ const BulletinBoard = () => {
     setSelectedCategory(null);
   };
 
+  const handlePostDelete = (postId: string) => {
+    setPosts(currentPosts => currentPosts.filter(post => post.id !== postId));
+  };
+
   return (
     <div className="relative">
       {/* Caixa de pesquisa e filtros - posicionada sobre a linha divisória */}
@@ -209,8 +213,12 @@ const BulletinBoard = () => {
       <div className="space-y-6 pb-12">
         {filteredPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPosts.map((post) => (
-              <PostIt key={post.id} post={post} />
+            {filteredPosts.map(post => (
+              <PostIt 
+                key={post.id} 
+                post={post} 
+                onDelete={handlePostDelete}  // ← Adicione esta linha
+              />
             ))}
           </div>
         ) : (

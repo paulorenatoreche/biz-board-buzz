@@ -1,7 +1,9 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
@@ -52,16 +54,43 @@ const PostIt = ({ post }: PostItProps) => {
     return diffDays;
   };
 
+  // Function to truncate company name if too long - reduced max length for consistency
+  const truncateCompanyName = (name: string, maxLength: number = 15) => {
+    if (name.length <= maxLength) return name;
+    return name.substring(0, maxLength) + "...";
+  };
+
+  const isCompanyNameLong = post.companyName.length > 15;
+
   return (
     <TooltipProvider>
       <Card 
         className="bg-white/95 hover:bg-white hover:shadow-2xl border border-white/20 cursor-pointer shadow-lg flex flex-col h-full hover:scale-[1.02] relative"
         onClick={() => setShowDetails(true)}
       >
-        <CardHeader className="pb-3 rounded-t-lg" style={{ background: 'rgb(58, 197, 225)' }}>
-          <div className="flex justify-between items-start gap-2">
-            <div className="flex-1 min-w-0">
-              <h3 className="font-bold text-white text-lg break-words leading-tight">{post.companyName}</h3>
+        <CardHeader className="pb-3 rounded-t-lg h-24 flex flex-col justify-center" style={{ background: 'rgb(58, 197, 225)' }}>
+          <div className="flex justify-between items-start gap-2 h-full">
+            <div className="flex-1 min-w-0 flex flex-col justify-center">
+              {isCompanyNameLong ? (
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <h3 className="font-bold text-white text-lg break-words leading-tight cursor-help">
+                      {truncateCompanyName(post.companyName)}
+                    </h3>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80 p-3 bg-white border border-gray-200 shadow-xl rounded-lg">
+                    <div className="overflow-hidden">
+                      <div className="animate-marquee whitespace-nowrap text-gray-900 font-semibold">
+                        {post.companyName}
+                      </div>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              ) : (
+                <h3 className="font-bold text-white text-lg break-words leading-tight">
+                  {post.companyName}
+                </h3>
+              )}
               <p className="text-sm text-blue-100 break-words">{post.fullName}</p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
@@ -121,9 +150,11 @@ const PostIt = ({ post }: PostItProps) => {
         <DialogContent className="bg-white/95 border border-white/20 shadow-2xl max-w-xl text-gray-900">
           <DialogHeader>
             <div className="flex justify-between items-center">
-              <DialogTitle className="text-xl font-bold text-gray-900">{post.companyName}</DialogTitle>
+              <DialogTitle className="text-xl font-bold text-gray-900 break-words overflow-wrap-anywhere pr-2">
+                {post.companyName}
+              </DialogTitle>
               <Badge 
-                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm"
+                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm flex-shrink-0"
               >
                 {post.category?.label || "Uncategorized"}
               </Badge>
@@ -135,18 +166,18 @@ const PostIt = ({ post }: PostItProps) => {
           <div className="space-y-4">
             <div>
               <h3 className="font-semibold text-gray-800 mb-2">Descrição:</h3>
-              <p className="text-gray-700 whitespace-pre-wrap">{post.description}</p>
+              <p className="text-gray-700 whitespace-pre-wrap break-words">{post.description}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <h3 className="font-semibold text-gray-800 mb-2">Informações de Contato:</h3>
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Mail size={16} />
+                  <div className="flex items-center gap-2 text-gray-700 break-all">
+                    <Mail size={16} className="flex-shrink-0" />
                     <span>{post.email}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Phone size={16} />
+                  <div className="flex items-center gap-2 text-gray-700 break-all">
+                    <Phone size={16} className="flex-shrink-0" />
                     <span>{post.phone}</span>
                   </div>
                 </div>

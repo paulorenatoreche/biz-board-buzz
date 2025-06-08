@@ -97,7 +97,7 @@ const PostIt = ({ post }: PostItProps) => {
                   {post.companyName}
                 </h3>
               )}
-              <p className="text-sm text-blue-100 break-words mt-1.5">{post.fullName}</p>
+              <p className="text-sm text-blue-100 break-words mt-1.6">{post.fullName}</p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <Badge 
@@ -172,7 +172,7 @@ const PostIt = ({ post }: PostItProps) => {
                 </DialogDescription>
               </div>
               <Badge 
-                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm self-start flex-shrink-0 mt-4 hover:bg-gray-100 hover:text-gray-600"
+                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm self-start flex-shrink-0 mt-4 hover:bg-gray-300 hover:text-gray-600"
               >
                 {post.category?.label || "Uncategorized"}
               </Badge>

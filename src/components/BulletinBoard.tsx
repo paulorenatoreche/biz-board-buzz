@@ -190,7 +190,7 @@ const BulletinBoard = () => {
                 return (
                   <Badge
                     key={category.value}
-                    className={`cursor-pointer transition-all hover:scale-105 border shadow-sm rounded-lg ${
+                    className={`cursor-pointer transition-all hover:scale-105 hover:bg-gray-200 border shadow-sm rounded-lg ${
                       selectedCategory === category.value 
                         ? 'bg-blue-600 text-white border-blue-600 shadow-lg' 
                         : colorClass

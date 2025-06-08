@@ -58,26 +58,26 @@ const PostIt = ({ post }: PostItProps) => {
         className="bg-white/95 hover:bg-white hover:shadow-2xl border border-white/20 cursor-pointer shadow-lg flex flex-col h-full hover:scale-[1.02] relative"
         onClick={() => setShowDetails(true)}
       >
-        {/* Edit button positioned in top-right corner */}
-        <Button
-          onClick={handleEdit}
-          className="absolute top-2 right-2 z-10 w-8 h-8 p-0 bg-white/80 hover:bg-white border border-gray-200 text-gray-600 hover:text-gray-800 shadow-sm"
-          variant="outline"
-        >
-          <Edit size={14} />
-        </Button>
-
         <CardHeader className="pb-3 rounded-t-lg" style={{ background: 'rgb(58, 197, 225)' }}>
-          <div className="flex justify-between items-start pr-8">
+          <div className="flex justify-between items-start">
             <div>
               <h3 className="font-bold text-white text-lg">{post.companyName}</h3>
               <p className="text-sm text-blue-100">{post.fullName}</p>
             </div>
-            <Badge 
-              className="ml-2 shadow-sm bg-white/20 text-white border-white/30 hover:bg-white/30" 
-            >
-              {post.category?.label || "Uncategorized"}
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge 
+                className="shadow-sm bg-white/20 text-white border-white/30 hover:bg-white/30" 
+              >
+                {post.category?.label || "Uncategorized"}
+              </Badge>
+              <Button
+                onClick={handleEdit}
+                className="w-6 h-6 p-0 bg-white/80 hover:bg-white border border-white/30 text-gray-600 hover:text-gray-800 shadow-sm"
+                variant="outline"
+              >
+                <Edit size={12} />
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="flex-grow bg-white/95 pt-3">

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
@@ -52,6 +53,14 @@ const PostIt = ({ post }: PostItProps) => {
     return diffDays;
   };
 
+  // Function to truncate company name if too long
+  const truncateCompanyName = (name: string, maxLength: number = 25) => {
+    if (name.length <= maxLength) return name;
+    return name.substring(0, maxLength) + "...";
+  };
+
+  const isCompanyNameLong = post.companyName.length > 25;
+
   return (
     <TooltipProvider>
       <Card 
@@ -61,7 +70,26 @@ const PostIt = ({ post }: PostItProps) => {
         <CardHeader className="pb-3 rounded-t-lg" style={{ background: 'rgb(58, 197, 225)' }}>
           <div className="flex justify-between items-start gap-2">
             <div className="flex-1 min-w-0">
-              <h3 className="font-bold text-white text-lg break-words leading-tight">{post.companyName}</h3>
+              {isCompanyNameLong ? (
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <h3 className="font-bold text-white text-lg break-words leading-tight cursor-help">
+                      {truncateCompanyName(post.companyName)}
+                    </h3>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80 p-3 bg-white border border-gray-200 shadow-xl rounded-lg">
+                    <div className="overflow-hidden">
+                      <div className="animate-marquee whitespace-nowrap text-gray-900 font-semibold">
+                        {post.companyName}
+                      </div>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              ) : (
+                <h3 className="font-bold text-white text-lg break-words leading-tight">
+                  {post.companyName}
+                </h3>
+              )}
               <p className="text-sm text-blue-100 break-words">{post.fullName}</p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">

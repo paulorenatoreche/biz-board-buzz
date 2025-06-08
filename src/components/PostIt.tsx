@@ -1,7 +1,7 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
@@ -53,7 +53,7 @@ const PostIt = ({ post }: PostItProps) => {
   };
 
   return (
-    <>
+    <TooltipProvider>
       <Card 
         className="bg-white/95 hover:bg-white hover:shadow-2xl border border-white/20 cursor-pointer shadow-lg flex flex-col h-full hover:scale-[1.02] relative"
         onClick={() => setShowDetails(true)}
@@ -66,17 +66,24 @@ const PostIt = ({ post }: PostItProps) => {
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <Badge 
-                className="shadow-sm bg-white/20 text-white border-white/30 hover:bg-white/30 whitespace-nowrap" 
+                className="shadow-sm bg-white/20 text-white border-white/30 hover:bg-white/40 whitespace-nowrap" 
               >
                 {post.category?.label || "Uncategorized"}
               </Badge>
-              <Button
-                onClick={handleEdit}
-                className="w-6 h-6 p-0 bg-white/80 hover:bg-white border border-white/30 text-gray-600 hover:text-gray-800 shadow-sm flex-shrink-0"
-                variant="outline"
-              >
-                <Edit size={12} />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={handleEdit}
+                    className="w-6 h-6 p-0 bg-white/80 hover:bg-white border border-white/30 text-gray-600 hover:text-gray-800 shadow-sm flex-shrink-0"
+                    variant="outline"
+                  >
+                    <Edit size={12} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Editar</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
         </CardHeader>
@@ -182,7 +189,7 @@ const PostIt = ({ post }: PostItProps) => {
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    </TooltipProvider>
   );
 };
 

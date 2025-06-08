@@ -1,10 +1,12 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
-import { Mail, Phone, Calendar, Clock } from "lucide-react";
+import { Mail, Phone, Calendar, Clock, Edit } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Category {
   value: string;
@@ -30,9 +32,15 @@ interface PostItProps {
 
 const PostIt = ({ post }: PostItProps) => {
   const [showDetails, setShowDetails] = useState(false);
+  const navigate = useNavigate();
 
   const handleContact = () => {
     window.location.href = `mailto:${post.email}?subject=Business Opportunity Response`;
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/edit-demand/${post.id}`);
   };
 
   // Calculate days remaining until expiration
@@ -47,11 +55,20 @@ const PostIt = ({ post }: PostItProps) => {
   return (
     <>
       <Card 
-        className="bg-white/95 hover:bg-white hover:shadow-2xl border border-white/20 cursor-pointer shadow-lg flex flex-col h-full hover:scale-[1.02]"
+        className="bg-white/95 hover:bg-white hover:shadow-2xl border border-white/20 cursor-pointer shadow-lg flex flex-col h-full hover:scale-[1.02] relative"
         onClick={() => setShowDetails(true)}
       >
+        {/* Edit button positioned in top-right corner */}
+        <Button
+          onClick={handleEdit}
+          className="absolute top-2 right-2 z-10 w-8 h-8 p-0 bg-white/80 hover:bg-white border border-gray-200 text-gray-600 hover:text-gray-800 shadow-sm"
+          variant="outline"
+        >
+          <Edit size={14} />
+        </Button>
+
         <CardHeader className="pb-3 rounded-t-lg" style={{ background: 'rgb(58, 197, 225)' }}>
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between items-start pr-8">
             <div>
               <h3 className="font-bold text-white text-lg">{post.companyName}</h3>
               <p className="text-sm text-blue-100">{post.fullName}</p>
@@ -143,16 +160,24 @@ const PostIt = ({ post }: PostItProps) => {
               </div>
             </div>
           </div>
-          <div className="mt-6">
+          <div className="mt-6 flex gap-3">
             <Button 
               onClick={handleContact}
-              className="w-full text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-12"
+              className="flex-1 text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-12"
               style={{
                 background: 'linear-gradient(135deg, rgb(60, 71, 157), rgb(45, 55, 135))'
               }}
             >
               <Mail size={16} className="mr-2" />
               Entrar em Contato
+            </Button>
+            <Button 
+              onClick={handleEdit}
+              variant="outline"
+              className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-12 px-4 rounded-lg"
+            >
+              <Edit size={16} className="mr-2" />
+              Editar
             </Button>
           </div>
         </DialogContent>

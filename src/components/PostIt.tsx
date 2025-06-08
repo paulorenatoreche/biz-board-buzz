@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -68,9 +67,9 @@ const PostIt = ({ post }: PostItProps) => {
         className="bg-white/95 hover:bg-white hover:shadow-2xl border border-white/20 cursor-pointer shadow-lg flex flex-col h-full hover:scale-[1.02] relative"
         onClick={() => setShowDetails(true)}
       >
-        <CardHeader className="pb-3 rounded-t-lg" style={{ background: 'rgb(58, 197, 225)' }}>
-          <div className="flex justify-between items-start gap-2">
-            <div className="flex-1 min-w-0">
+        <CardHeader className="pb-3 rounded-t-lg h-24 flex flex-col justify-center" style={{ background: 'rgb(58, 197, 225)' }}>
+          <div className="flex justify-between items-start gap-2 h-full">
+            <div className="flex-1 min-w-0 flex flex-col justify-center">
               {isCompanyNameLong ? (
                 <HoverCard>
                   <HoverCardTrigger asChild>

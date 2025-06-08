@@ -59,20 +59,20 @@ const PostIt = ({ post }: PostItProps) => {
         onClick={() => setShowDetails(true)}
       >
         <CardHeader className="pb-3 rounded-t-lg" style={{ background: 'rgb(58, 197, 225)' }}>
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-bold text-white text-lg">{post.companyName}</h3>
-              <p className="text-sm text-blue-100">{post.fullName}</p>
+          <div className="flex justify-between items-start gap-2">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold text-white text-lg break-words leading-tight">{post.companyName}</h3>
+              <p className="text-sm text-blue-100 break-words">{post.fullName}</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <Badge 
-                className="shadow-sm bg-white/20 text-white border-white/30 hover:bg-white/30" 
+                className="shadow-sm bg-white/20 text-white border-white/30 hover:bg-white/30 whitespace-nowrap" 
               >
                 {post.category?.label || "Uncategorized"}
               </Badge>
               <Button
                 onClick={handleEdit}
-                className="w-6 h-6 p-0 bg-white/80 hover:bg-white border border-white/30 text-gray-600 hover:text-gray-800 shadow-sm"
+                className="w-6 h-6 p-0 bg-white/80 hover:bg-white border border-white/30 text-gray-600 hover:text-gray-800 shadow-sm flex-shrink-0"
                 variant="outline"
               >
                 <Edit size={12} />

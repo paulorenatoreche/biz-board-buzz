@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -53,13 +54,13 @@ const PostIt = ({ post }: PostItProps) => {
     return diffDays;
   };
 
-  // Function to truncate company name if too long
-  const truncateCompanyName = (name: string, maxLength: number = 25) => {
+  // Function to truncate company name if too long - reduced max length for consistency
+  const truncateCompanyName = (name: string, maxLength: number = 15) => {
     if (name.length <= maxLength) return name;
     return name.substring(0, maxLength) + "...";
   };
 
-  const isCompanyNameLong = post.companyName.length > 25;
+  const isCompanyNameLong = post.companyName.length > 15;
 
   return (
     <TooltipProvider>

@@ -172,7 +172,7 @@ const PostIt = ({ post }: PostItProps) => {
                 </DialogDescription>
               </div>
               <Badge 
-                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm self-start flex-shrink-0 mt-4"
+                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm self-start flex-shrink-0 mt-4 hover:bg-gray-100 hover:text-gray-600"
               >
                 {post.category?.label || "Uncategorized"}
               </Badge>

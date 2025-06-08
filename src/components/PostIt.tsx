@@ -59,7 +59,7 @@ const PostIt = ({ post }: PostItProps) => {
     return name.substring(0, maxLength) + "...";
   };
 
-  const isCompanyNameLong = post.companyName.length > 15;
+  const isCompanyNameLong = post.companyName.length > 25;
 
   return (
     <TooltipProvider>

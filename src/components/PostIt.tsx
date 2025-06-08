@@ -102,7 +102,7 @@ const PostIt = ({ post }: PostItProps) => {
                 <TooltipTrigger asChild>
                   <Button
                     onClick={handleEdit}
-                    className="w-6 h-6 p-0 bg-white/80 hover:bg-white border border-white/30 text-gray-600 hover:text-gray-800 shadow-sm flex-shrink-0"
+                    className="w-6 h-6 p-0 bg-white/80 hover:bg-white border border-white/30 text-gray-600 hover:text-gray-800 shadow-sm flex-shrink-0 hover:scale-110 transition-transform duration-200"
                     variant="outline"
                   >
                     <Edit size={12} />
@@ -134,9 +134,16 @@ const PostIt = ({ post }: PostItProps) => {
               e.stopPropagation();
               handleContact();
             }}
-            className="w-full text-white border-0 shadow-lg hover:shadow-xl hover:scale-105  rounded-lg h-11"
+            className="w-full text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 rounded-lg h-11"
             style={{
-              background: 'rgb(138, 198, 64)'
+              background: 'rgb(138, 198, 64)',
+              '--hover-bg': 'rgb(118, 168, 54)'
+            } as React.CSSProperties & { '--hover-bg': string }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgb(118, 168, 54)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgb(138, 198, 64)';
             }}
           >
             <Mail size={16} className="mr-2" />
@@ -208,9 +215,15 @@ const PostIt = ({ post }: PostItProps) => {
           <div className="mt-8 flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
             <Button 
               onClick={handleContact}
-              className="flex-1 text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-12"
+              className="flex-1 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 rounded-lg h-12"
               style={{
                 background: 'linear-gradient(135deg, rgb(60, 71, 157), rgb(45, 55, 135))'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgb(50, 61, 137), rgb(35, 45, 115))';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgb(60, 71, 157), rgb(45, 55, 135))';
               }}
             >
               <Mail size={16} className="mr-2" />
@@ -219,7 +232,7 @@ const PostIt = ({ post }: PostItProps) => {
             <Button 
               onClick={handleEdit}
               variant="outline"
-              className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-12 px-6 rounded-lg sm:w-auto w-full"
+              className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:scale-105 transition-all duration-200 h-12 px-6 rounded-lg sm:w-auto w-full"
             >
               <Edit size={16} className="mr-2" />
               Editar

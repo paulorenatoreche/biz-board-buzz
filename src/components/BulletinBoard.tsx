@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PostIt from "./PostIt";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SERVICE_CATEGORIES } from "@/pages/AddDemand";
+import { SERVICE_CATEGORIES } from "@/utils/serviceCategories";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter } from "lucide-react";
 

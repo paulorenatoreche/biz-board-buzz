@@ -54,12 +54,19 @@ const PostIt = ({ post }: PostItProps) => {
   };
 
   // Function to truncate company name if too long - reduced max length for consistency
-  const truncateCompanyName = (name: string, maxLength: number = 15) => {
+  const truncateCompanyName = (name: string, maxLength: number = 25) => {
     if (name.length <= maxLength) return name;
-    return name.substring(0, maxLength) + "...";
+    return name.substring(0, maxLength-8) + "...";
   };
 
-  const isCompanyNameLong = post.companyName.length > 15;
+  const truncateName = (name: string, maxLength: number = 25) => {
+    if (name.length <= maxLength) return name;
+    return name.substring(0, maxLength-8) + "...";
+  };
+
+  const isNameLong = post.fullName.length > 25
+
+  const isCompanyNameLong = post.companyName.length > 25;
 
   return (
     <TooltipProvider>
@@ -90,7 +97,7 @@ const PostIt = ({ post }: PostItProps) => {
                   {post.companyName}
                 </h3>
               )}
-              <p className="text-sm text-blue-100 break-words">{post.fullName}</p>
+              <p className="text-sm text-blue-100 break-words mt-1.5">{post.fullName}</p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <Badge 
@@ -157,15 +164,15 @@ const PostIt = ({ post }: PostItProps) => {
           <DialogHeader>
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
               <div className="flex-1 min-w-0">
-                <DialogTitle className="text-xl font-bold text-gray-900 break-words hyphens-auto leading-tight">
+                <DialogTitle className="text-xl font-bold text-gray-900 break-words hyphens-auto leading-tight mt-3">
                   {post.companyName}
                 </DialogTitle>
-                <DialogDescription className="text-gray-600 mt-1">
+                <DialogDescription className="text-gray-600 mt-3">
                   Publicado por {post.fullName}
                 </DialogDescription>
               </div>
               <Badge 
-                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm self-start flex-shrink-0"
+                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm self-start flex-shrink-0 mt-4"
               >
                 {post.category?.label || "Uncategorized"}
               </Badge>

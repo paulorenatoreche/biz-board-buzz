@@ -9,6 +9,7 @@ export const SERVICE_CATEGORIES = [
   { value: "equipment", label: "Equipamentos", color: "#FDE1D3" },
   { value: "o-and-m", label: "O&M", color: "#D3E4FD" },
   { value: "training-courses", label: "Treinamentos & Cursos", color: "#F1F0FB" },
+  { value: "other", label: "Outro", color: "#E5E7EB" },
 ];
 
 export interface FormData {

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import PostIt from "./PostIt";
 import { Input } from "@/components/ui/input";
@@ -46,6 +47,22 @@ const BulletinBoard = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [allCategories, setAllCategories] = useState<Category[]>(SERVICE_CATEGORIES);
+
+  // Function to get unique categories from posts
+  const getUniqueCategories = (posts: Post[]) => {
+    const customCategories: Category[] = [];
+    const usedValues = new Set(SERVICE_CATEGORIES.map(cat => cat.value));
+
+    posts.forEach(post => {
+      if (!usedValues.has(post.category.value)) {
+        customCategories.push(post.category);
+        usedValues.add(post.category.value);
+      }
+    });
+
+    return [...SERVICE_CATEGORIES, ...customCategories];
+  };
 
   // Effect to load posts from localStorage
   useEffect(() => {
@@ -54,11 +71,14 @@ const BulletinBoard = () => {
       const storedPosts = localStorage.getItem('bulletinPosts');
       
       if (storedPosts) {
-        setPosts(JSON.parse(storedPosts));
+        const parsedPosts = JSON.parse(storedPosts);
+        setPosts(parsedPosts);
+        setAllCategories(getUniqueCategories(parsedPosts));
       } else {
         // Initialize with mock data if no posts are stored
         setPosts(MOCK_POSTS);
         localStorage.setItem('bulletinPosts', JSON.stringify(MOCK_POSTS));
+        setAllCategories(getUniqueCategories(MOCK_POSTS));
       }
     };
 
@@ -82,6 +102,7 @@ const BulletinBoard = () => {
         if (validPosts.length < parsedPosts.length) {
           localStorage.setItem('bulletinPosts', JSON.stringify(validPosts));
           setPosts(validPosts);
+          setAllCategories(getUniqueCategories(validPosts));
         }
       }
     }, 60000); // Check every minute
@@ -142,7 +163,7 @@ const BulletinBoard = () => {
               <Button 
                 variant="outline" 
                 onClick={clearFilters}
-                className="bg-white border-gray-300 text-gray-700 hover:bg-white hover:scale-105  h-12 rounded-lg shadow-sm"
+                className="bg-white border-gray-300 text-gray-700 hover:bg-gray-100 hover:scale-105  h-12 rounded-lg shadow-sm"
               >
                 <Filter size={16} className="mr-2" />
                 Limpar Filtros
@@ -151,7 +172,7 @@ const BulletinBoard = () => {
           </div>
           
           <div className="flex flex-wrap gap-2">
-            {SERVICE_CATEGORIES.map((category, index) => {
+            {allCategories.map((category, index) => {
               const colors = [
                 'bg-blue-100 text-blue-700 border-blue-200',
                 'bg-green-100 text-green-700 border-green-200',
@@ -167,7 +188,7 @@ const BulletinBoard = () => {
               return (
                 <Badge
                   key={category.value}
-                  className={`cursor-pointer transition-all hover:bg-white/40 border shadow-sm rounded-lg ${
+                  className={`cursor-pointer transition-all hover:bg-gray-100 border shadow-sm rounded-lg ${
                     selectedCategory === category.value 
                       ? 'bg-blue-600 text-white border-blue-600 shadow-lg' 
                       : colorClass

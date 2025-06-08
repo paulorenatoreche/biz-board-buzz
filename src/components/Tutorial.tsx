@@ -27,7 +27,6 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
   const handlePlayVideo = () => {
     setIsVideoPlaying(true);
     // Aqui você pode adicionar a lógica para reproduzir o vídeo
-    toast.info("Vídeo tutorial em breve!");
   };
 
   return (

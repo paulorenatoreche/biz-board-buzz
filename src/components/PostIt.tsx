@@ -147,58 +147,66 @@ const PostIt = ({ post }: PostItProps) => {
       </Card>
 
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="bg-white/95 border border-white/20 shadow-2xl max-w-xl text-gray-900">
+        <DialogContent className="bg-white/95 border border-white/20 shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto text-gray-900">
           <DialogHeader>
-            <div className="flex justify-between items-center">
-              <DialogTitle className="text-xl font-bold text-gray-900 break-words overflow-wrap-anywhere pr-2">
-                {post.companyName}
-              </DialogTitle>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <DialogTitle className="text-xl font-bold text-gray-900 break-words hyphens-auto leading-tight">
+                  {post.companyName}
+                </DialogTitle>
+                <DialogDescription className="text-gray-600 mt-1">
+                  Publicado por {post.fullName}
+                </DialogDescription>
+              </div>
               <Badge 
-                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm flex-shrink-0"
+                className="bg-blue-100 text-blue-700 border-blue-200 shadow-sm self-start flex-shrink-0"
               >
                 {post.category?.label || "Uncategorized"}
               </Badge>
             </div>
-            <DialogDescription className="text-gray-600">
-              Publicado por {post.fullName}
-            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-6 mt-4">
             <div>
-              <h3 className="font-semibold text-gray-800 mb-2">Descrição:</h3>
-              <p className="text-gray-700 whitespace-pre-wrap break-words">{post.description}</p>
+              <h3 className="font-semibold text-gray-800 mb-3">Descrição:</h3>
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <p className="text-gray-700 whitespace-pre-wrap break-words leading-relaxed hyphens-auto overflow-wrap-anywhere">
+                  {post.description}
+                </p>
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <h3 className="font-semibold text-gray-800 mb-2">Informações de Contato:</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-gray-700 break-all">
-                    <Mail size={16} className="flex-shrink-0" />
-                    <span>{post.email}</span>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <h3 className="font-semibold text-gray-800">Informações de Contato:</h3>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Mail size={16} className="flex-shrink-0 mt-0.5 text-blue-600" />
+                    <span className="text-gray-700 break-all text-sm leading-relaxed">{post.email}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-700 break-all">
-                    <Phone size={16} className="flex-shrink-0" />
-                    <span>{post.phone}</span>
+                  <div className="flex items-start gap-3">
+                    <Phone size={16} className="flex-shrink-0 mt-0.5 text-blue-600" />
+                    <span className="text-gray-700 break-all text-sm leading-relaxed">{post.phone}</span>
                   </div>
                 </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-gray-800 mb-2">Datas:</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Calendar size={16} />
-                    <span>Publicado: {format(new Date(post.createdAt), "dd MMM yyyy")}</span>
+              <div className="space-y-3">
+                <h3 className="font-semibold text-gray-800">Datas:</h3>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Calendar size={16} className="text-blue-600" />
+                    <span className="text-gray-700 text-sm">Publicado: {format(new Date(post.createdAt), "dd MMM yyyy")}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Clock size={16} />
-                    <span>Expira: {format(new Date(post.expiresAt), "dd MMM yyyy")}</span>
+                  <div className="flex items-center gap-3">
+                    <Clock size={16} className="text-blue-600" />
+                    <span className="text-gray-700 text-sm">Expira: {format(new Date(post.expiresAt), "dd MMM yyyy")}</span>
                   </div>
-                  <p className="text-gray-800 font-semibold">Expira em: {daysRemaining()} dias</p>
+                  <div className="pt-2 border-t border-gray-200">
+                    <p className="text-gray-800 font-semibold text-sm">Expira em: {daysRemaining()} dias</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="mt-6 flex gap-3">
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
             <Button 
               onClick={handleContact}
               className="flex-1 text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-12"
@@ -212,7 +220,7 @@ const PostIt = ({ post }: PostItProps) => {
             <Button 
               onClick={handleEdit}
               variant="outline"
-              className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-12 px-4 rounded-lg"
+              className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-12 px-6 rounded-lg sm:w-auto w-full"
             >
               <Edit size={16} className="mr-2" />
               Editar

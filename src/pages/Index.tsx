@@ -4,9 +4,15 @@ import { Plus, ExternalLink } from "lucide-react";
 import BulletinBoard from "@/components/BulletinBoard";
 import { useNavigate } from "react-router-dom";
 import PasswordProtection from "@/components/PasswordProtection";
+import Tutorial from "@/components/Tutorial";
+import { useState } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [showTutorial, setShowTutorial] = useState(() => {
+    const tutorialCompleted = localStorage.getItem("tutorialCompleted");
+    return tutorialCompleted !== "true";
+  });
 
   const MainContent = () => (
     <div className="min-h-screen relative overflow-hidden">
@@ -63,6 +69,11 @@ const Index = () => {
           <BulletinBoard />
         </div>
       </div>
+
+      {/* Tutorial overlay */}
+      {showTutorial && (
+        <Tutorial onComplete={() => setShowTutorial(false)} />
+      )}
     </div>
   );
 

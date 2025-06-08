@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { ArrowLeft, Edit } from "lucide-react";
-import { SERVICE_CATEGORIES } from "@/utils/serviceCategories";
+import { SERVICE_CATEGORIES } from "./AddDemand";
 
 interface FormData {
   fullName: string;

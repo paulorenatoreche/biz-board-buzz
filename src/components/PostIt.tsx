@@ -54,7 +54,7 @@ const PostIt = ({ post }: PostItProps) => {
   };
 
   // Function to truncate company name if too long - reduced max length for consistency
-  const truncateCompanyName = (name: string, maxLength: number = 15) => {
+  const truncateCompanyName = (name: string, maxLength: number = 25) => {
     if (name.length <= maxLength) return name;
     return name.substring(0, maxLength) + "...";
   };

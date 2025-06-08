@@ -172,33 +172,35 @@ const BulletinBoard = () => {
           </div>
           
           <div className="flex flex-wrap gap-2">
-            {allCategories.map((category, index) => {
-              const colors = [
-                'bg-blue-100 text-blue-700 border-blue-200',
-                'bg-green-100 text-green-700 border-green-200',
-                'bg-purple-100 text-purple-700 border-purple-200',
-                'bg-orange-100 text-orange-700 border-orange-200',
-                'bg-pink-100 text-pink-700 border-pink-200',
-                'bg-indigo-100 text-indigo-700 border-indigo-200',
-                'bg-yellow-100 text-yellow-700 border-yellow-200',
-                'bg-red-100 text-red-700 border-red-200'
-              ];
-              const colorClass = colors[index % colors.length];
-              
-              return (
-                <Badge
-                  key={category.value}
-                  className={`cursor-pointer transition-all hover:bg-gray-100 border shadow-sm rounded-lg ${
-                    selectedCategory === category.value 
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-lg' 
-                      : colorClass
-                  }`}
-                  onClick={() => handleCategoryClick(category.value)}
-                >
-                  {category.label}
-                </Badge>
-              );
-            })}
+            {allCategories
+              .filter(category => category.value !== "other") // Remove "Outro" dos filtros
+              .map((category, index) => {
+                const colors = [
+                  'bg-blue-100 text-blue-700 border-blue-200',
+                  'bg-green-100 text-green-700 border-green-200',
+                  'bg-purple-100 text-purple-700 border-purple-200',
+                  'bg-orange-100 text-orange-700 border-orange-200',
+                  'bg-pink-100 text-pink-700 border-pink-200',
+                  'bg-indigo-100 text-indigo-700 border-indigo-200',
+                  'bg-yellow-100 text-yellow-700 border-yellow-200',
+                  'bg-red-100 text-red-700 border-red-200'
+                ];
+                const colorClass = colors[index % colors.length];
+                
+                return (
+                  <Badge
+                    key={category.value}
+                    className={`cursor-pointer transition-all hover:bg-gray-200 border shadow-sm rounded-lg ${
+                      selectedCategory === category.value 
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-lg' 
+                        : colorClass
+                    }`}
+                    onClick={() => handleCategoryClick(category.value)}
+                  >
+                    {category.label}
+                  </Badge>
+                );
+              })}
           </div>
         </div>
       </div>

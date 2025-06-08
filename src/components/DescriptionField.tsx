@@ -14,12 +14,12 @@ const DescriptionField = ({ form }: DescriptionFieldProps) => {
       control={form.control}
       name="description"
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="w-full">
           <FormLabel className="text-gray-700 font-semibold">Descrição (máx. 300 palavras)</FormLabel>
           <FormControl>
             <Textarea
               required
-              className="h-32 bg-gray-50 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-lg resize-none"
+              className="h-32 bg-gray-50 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-lg resize-none w-full"
               placeholder="Descreva detalhadamente a oportunidade de negócio, requisitos específicos e expectativas..."
               {...field}
               onChange={e => {

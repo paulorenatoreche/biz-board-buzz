@@ -111,16 +111,16 @@ const AddDemandForm = () => {
   };
 
   return (
-    <div className="relative z-10 px-4 pb-12">
-      <div className="container mx-auto max-w-2xl">
-        <Card className="bg-white/95 backdrop-blur-sm border border-white/20 shadow-2xl">
+    <div className="relative z-10 px-4 pb-12 w-full">
+      <div className="container mx-auto max-w-2xl w-full">
+        <Card className="bg-white/95 backdrop-blur-sm border border-white/20 shadow-2xl w-full">
           <CardHeader className="text-center pb-6">
             <h2 className="text-xl font-semibold text-gray-800">Compartilhe sua necessidade de negócio</h2>
             <p className="text-gray-600">Conecte-se com potenciais parceiros</p>
           </CardHeader>
-          <CardContent className="px-8 pb-8">
+          <CardContent className="px-6 sm:px-8 pb-8">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 w-full">
                 <PersonalInfoFields form={form} />
                 <CategoryFields 
                   form={form} 

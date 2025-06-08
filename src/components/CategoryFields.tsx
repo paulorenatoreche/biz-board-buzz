@@ -15,12 +15,12 @@ const CategoryFields = ({ form, showCustomCategory, onCategoryChange }: Category
   const selectedCategory = form.watch("category");
 
   return (
-    <>
+    <div className="space-y-6 w-full">
       <FormField
         control={form.control}
         name="category"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="w-full">
             <FormLabel className="text-gray-700 font-semibold">Categoria do Serviço</FormLabel>
             <Select 
               onValueChange={onCategoryChange} 
@@ -28,7 +28,7 @@ const CategoryFields = ({ form, showCustomCategory, onCategoryChange }: Category
               required
             >
               <FormControl>
-                <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-800 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 h-12 rounded-lg">
+                <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-800 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 h-12 rounded-lg w-full">
                   <SelectValue placeholder="Selecione uma categoria" />
                 </SelectTrigger>
               </FormControl>
@@ -49,13 +49,13 @@ const CategoryFields = ({ form, showCustomCategory, onCategoryChange }: Category
           control={form.control}
           name="customCategory"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel className="text-gray-700 font-semibold">Categoria Personalizada</FormLabel>
               <FormControl>
                 <Input 
                   required={selectedCategory === "other"}
                   {...field} 
-                  className="bg-gray-50 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 h-12 rounded-lg"
+                  className="bg-gray-50 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 h-12 rounded-lg w-full"
                   placeholder="Digite sua categoria personalizada"
                 />
               </FormControl>
@@ -63,7 +63,7 @@ const CategoryFields = ({ form, showCustomCategory, onCategoryChange }: Category
           )}
         />
       )}
-    </>
+    </div>
   );
 };
 

@@ -167,8 +167,8 @@ const PostIt = ({ post }: PostItProps) => {
           <div className="space-y-6 mt-4">
             <div>
               <h3 className="font-semibold text-gray-800 mb-3">Descrição:</h3>
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <p className="text-gray-700 whitespace-pre-wrap break-words leading-relaxed hyphens-auto overflow-wrap-anywhere word-break-break-word">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 overflow-hidden">
+                <p className="text-gray-700 whitespace-pre-wrap break-words leading-relaxed hyphens-auto max-w-full overflow-wrap-break-word word-break-break-word">
                   {post.description}
                 </p>
               </div>
@@ -176,14 +176,14 @@ const PostIt = ({ post }: PostItProps) => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <h3 className="font-semibold text-gray-800">Informações de Contato:</h3>
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 space-y-3">
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 space-y-3 overflow-hidden">
                   <div className="flex items-start gap-3">
                     <Mail size={16} className="flex-shrink-0 mt-0.5 text-blue-600" />
-                    <span className="text-gray-700 break-all text-sm leading-relaxed">{post.email}</span>
+                    <span className="text-gray-700 break-all text-sm leading-relaxed min-w-0 overflow-wrap-break-word">{post.email}</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <Phone size={16} className="flex-shrink-0 mt-0.5 text-blue-600" />
-                    <span className="text-gray-700 break-all text-sm leading-relaxed">{post.phone}</span>
+                    <span className="text-gray-700 break-all text-sm leading-relaxed min-w-0 overflow-wrap-break-word">{post.phone}</span>
                   </div>
                 </div>
               </div>

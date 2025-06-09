@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,11 +7,11 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Mail, Phone, Calendar, Clock, Edit, Trash, Eye, EyeOff } from "lucide-react";
+import { Mail, Phone, Calendar, Clock, Edit, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/sonner";
+import { getCurrentUserId } from "@/utils/postUtils";
 
 interface Category {
   value: string;
@@ -38,20 +39,7 @@ interface PostItProps {
 
 const PostIt = ({ post, onDelete }: PostItProps) => {
   const [showDetails, setShowDetails] = useState(false);
-  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
-  // Gerar ou recuperar ID único do usuário
-  const getCurrentUserId = () => {
-    let userId = localStorage.getItem('currentUserId');
-    if (!userId) {
-      userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('currentUserId', userId);
-    }
-    return userId;
-  };
 
   const currentUserId = getCurrentUserId();
   const isCreator = post.creatorId === currentUserId;
@@ -69,23 +57,12 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
     navigate(`/edit-demand/${post.id}`);
   };
 
-  const handleDeleteConfirm = () => {
-    setShowPasswordDialog(true);
-  };
-
-  const handlePasswordSubmit = () => {
-    // Verificar se a senha está correta (mesmo password da tela principal)
-    if (password === "1234") {
-      handleDelete();
-      setShowPasswordDialog(false);
-      setPassword("");
-    } else {
-      toast.error("Senha incorreta. Apenas o autor pode excluir a publicação.");
-      setPassword("");
-    }
-  };
-
   const handleDelete = () => {
+    if (!isCreator) {
+      toast.error("Apenas o criador do post pode excluí-lo.");
+      return;
+    }
+
     try {
       // Get posts from localStorage
       const storedPosts = localStorage.getItem('bulletinPosts');
@@ -99,9 +76,8 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
         // Show success message
         toast.success("Publicação excluída com sucesso!");
         
-        // Close dialogs
+        // Close dialog
         setShowDetails(false);
-        setShowPasswordDialog(false);
         
         // Chama o callback para atualizar a lista no componente pai
         if (onDelete) {
@@ -249,42 +225,44 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
                 >
                   {post.category?.label || "Uncategorized"}
                 </Badge>
-                <AlertDialog>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          className="w-8 h-8 p-0 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 hover:text-red-700 shadow-sm flex-shrink-0 hover:scale-110 transition-transform duration-200 mt-4"
-                          variant="outline"
+                {isCreator && (
+                  <AlertDialog>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            className="w-8 h-8 p-0 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 hover:text-red-700 shadow-sm flex-shrink-0 hover:scale-110 transition-transform duration-200 mt-4"
+                            variant="outline"
+                          >
+                            <Trash size={14} />
+                          </Button>
+                        </AlertDialogTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Excluir</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <AlertDialogContent className="bg-white border border-gray-200 shadow-2xl">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="text-gray-900">Tem certeza que deseja excluir?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-gray-600">
+                          Esta ação não pode ser desfeita. A publicação será permanentemente removida do quadro de oportunidades.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
+                          Cancelar
+                        </AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={handleDelete}
+                          className="bg-red-600 text-white hover:bg-red-700"
                         >
-                          <Trash size={14} />
-                        </Button>
-                      </AlertDialogTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Excluir</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <AlertDialogContent className="bg-white border border-gray-200 shadow-2xl">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle className="text-gray-900">Tem certeza que deseja excluir?</AlertDialogTitle>
-                      <AlertDialogDescription className="text-gray-600">
-                        Esta ação não pode ser desfeita. A publicação será permanentemente removida do quadro de oportunidades.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
-                        Cancelar
-                      </AlertDialogCancel>
-                      <AlertDialogAction 
-                        onClick={handleDeleteConfirm}
-                        className="bg-red-600 text-white hover:bg-red-700"
-                      >
-                        Continuar
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                          Excluir
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
               </div>
             </div>
           </DialogHeader>
@@ -356,60 +334,6 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
                 Editar
               </Button>
             )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Dialog de confirmação de senha */}
-      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
-        <DialogContent className="bg-white border border-gray-200 shadow-2xl max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-gray-900">Confirmar Exclusão</DialogTitle>
-            <DialogDescription className="text-gray-600">
-              Digite a senha para confirmar que você é o autor desta publicação:
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 mt-4">
-            <div className="relative">
-              <Input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Digite a senha"
-                className="pr-10 bg-gray-50 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:border-red-400 focus:ring-2 focus:ring-red-100 h-12 rounded-lg"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handlePasswordSubmit();
-                  }
-                }}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-            <div className="flex gap-3 pt-2">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setShowPasswordDialog(false);
-                  setPassword("");
-                }}
-                className="flex-1 bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-              >
-                Cancelar
-              </Button>
-              <Button
-                onClick={handlePasswordSubmit}
-                className="flex-1 bg-red-600 text-white hover:bg-red-700"
-                disabled={!password}
-              >
-                Excluir
-              </Button>
-            </div>
           </div>
         </DialogContent>
       </Dialog>

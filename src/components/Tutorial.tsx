@@ -1,9 +1,7 @@
-
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Play, X, CheckCircle } from "lucide-react";
-import { toast } from "sonner";
+import { Play, X, CheckCircle, AlertCircle } from "lucide-react";
 
 interface TutorialProps {
   onComplete: () => void;
@@ -13,33 +11,57 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+  const [loadingVideo, setLoadingVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const previewVideoRef = useRef<HTMLVideoElement>(null);
 
   const handleSkip = () => {
-    localStorage.setItem("tutorialCompleted", "true");
-    toast.success("Tutorial pulado!");
+    // Usando estado em memória ao invés de localStorage
+    console.log("Tutorial pulado!");
     onComplete();
   };
 
   const handleComplete = () => {
-    localStorage.setItem("tutorialCompleted", "true");
-    toast.success("Tutorial concluído!");
+    // Usando estado em memória ao invés de localStorage
+    console.log("Tutorial concluído!");
     onComplete();
   };
 
   const handlePlayVideo = () => {
+    setLoadingVideo(true);
     setIsVideoPlaying(true);
+    setVideoError(false);
+    
     if (videoRef.current) {
-      videoRef.current.play();
+      const playPromise = videoRef.current.play();
+      
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setLoadingVideo(false);
+          })
+          .catch((error) => {
+            console.error("Erro ao reproduzir vídeo:", error);
+            setVideoError(true);
+            setLoadingVideo(false);
+          });
+      }
     }
   };
 
   const handleVideoLoaded = () => {
     setVideoLoaded(true);
+    setLoadingVideo(false);
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
     }
+  };
+
+  const handleVideoError = (e: any) => {
+    console.error("Erro no vídeo:", e);
+    setVideoError(true);
+    setLoadingVideo(false);
   };
 
   const handlePreviewLoaded = () => {
@@ -48,13 +70,16 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
     }
   };
 
+  const handlePreviewError = () => {
+    console.warn("Erro ao carregar preview do vídeo");
+  };
+
   const handleVideoTimeUpdate = () => {
     if (videoRef.current) {
       const duration = videoRef.current.duration;
       const currentTime = videoRef.current.currentTime;
       
-      if (currentTime >= duration) {
-        videoRef.current.pause();
+      if (currentTime >= duration - 0.1) { // Pequena margem para evitar problemas de timing
         setVideoEnded(true);
       }
     }
@@ -80,6 +105,9 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
           src="/lovable-uploads/af_datlaz_logo_br.png"
           alt="Datlaz Logo"
           className="h-8 md:h-10 drop-shadow-lg"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
         />
       </div>
       <div className="fixed top-3 right-6 z-60" style={{ marginTop: '5.1px' }}>
@@ -87,6 +115,9 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
           src="/lovable-uploads/abeeolica_logo_br.png"
           alt="ABEEÓLICA Logo"
           className="h-8 md:h-14 drop-shadow-lg"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
         />
       </div>
 
@@ -125,8 +156,11 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                     muted
                     preload="metadata"
                     onLoadedData={handlePreviewLoaded}
+                    onError={handlePreviewError}
                   >
                     <source src="/videos/hub.mp4" type="video/mp4" />
+                    <source src="/videos/hub.webm" type="video/webm" />
+                    Seu navegador não suporta o elemento de vídeo.
                   </video>
                   
                   {/* Overlay com play button */}
@@ -142,20 +176,68 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                     </div>
                   </div>
                 </div>
+              ) : videoError ? (
+                <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                  <div className="text-center p-8">
+                    <AlertCircle size={48} className="mx-auto mb-4 text-red-500" />
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                      Erro ao carregar vídeo
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      Não foi possível carregar o vídeo do tutorial.
+                    </p>
+                    <Button 
+                      onClick={() => {
+                        setVideoError(false);
+                        setIsVideoPlaying(false);
+                      }}
+                      variant="outline"
+                      className="mr-2"
+                    >
+                      Tentar Novamente
+                    </Button>
+                    <Button onClick={handleComplete} variant="default">
+                      Continuar sem vídeo
+                    </Button>
+                  </div>
+                </div>
               ) : (
+                <div className="w-full h-full relative">
+                  {loadingVideo && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+                      <div className="text-white text-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
+                        <p>Carregando vídeo...</p>
+                      </div>
+                    </div>
+                  )}
+                  {/* Opção 1: Vídeo hospedado externamente */}
                 <video 
-                  ref={videoRef}
-                  controls 
-                  autoPlay
-                  className="w-full h-full bg-black"
-                  onLoadedData={handleVideoLoaded}
-                  onTimeUpdate={handleVideoTimeUpdate}
-                  onEnded={handleVideoEnded}
-                  preload="auto"
-                >
-                  <source src="/lovable-uploads/hub.mp4" type="video/mp4" />
-                  Seu navegador não suporta o elemento de vídeo.
-                </video>
+                    ref={videoRef}
+                    controls 
+                    className="w-full h-full bg-black"
+                    onLoadedData={handleVideoLoaded}
+                    onTimeUpdate={handleVideoTimeUpdate}
+                    onEnded={handleVideoEnded}
+                    onError={handleVideoError}
+                    preload="auto"
+                    playsInline
+                  >
+                    <source src="/videos/hub.mp4" type="video/mp4" />
+                    <source src="/videos/hub.webm" type="video/webm" />
+                    Seu navegador não suporta o elemento de vídeo.
+                  </video>
+
+                {/* Opção 2: YouTube incorporado (descomente para usar) */}
+                {/* <iframe
+                    className="w-full h-full"
+                    src="https://www.youtube.com/embed/SEU_VIDEO_ID?autoplay=1&controls=1"
+                    title="Tutorial"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe> */}
+                </div>
               )}
             </div>
             

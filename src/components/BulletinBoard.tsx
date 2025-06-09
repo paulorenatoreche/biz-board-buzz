@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import PostIt from "./PostIt";
 import { Input } from "@/components/ui/input";
@@ -6,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { SERVICE_CATEGORIES } from "@/utils/serviceCategories";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter } from "lucide-react";
-import { getPosts, Post, initializeDatabase } from "@/lib/supabase";
+import { getPosts, Post as SupabasePost, initializeDatabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
 interface Category {
@@ -15,15 +14,29 @@ interface Category {
   color: string;
 }
 
+// Local interface for the component's internal use
+interface LocalPost {
+  id: string;
+  fullName: string;
+  companyName: string;
+  description: string;
+  email: string;
+  phone: string;
+  category: Category;
+  createdAt: string;
+  expiresAt: string;
+  creatorId?: string;
+}
+
 const BulletinBoard = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<LocalPost[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [allCategories, setAllCategories] = useState<Category[]>(SERVICE_CATEGORIES);
   const [isLoading, setIsLoading] = useState(true);
 
   // Function to get unique categories from posts
-  const getUniqueCategories = (posts: Post[]) => {
+  const getUniqueCategories = (posts: SupabasePost[]) => {
     const customCategories: Category[] = [];
     const usedValues = new Set(SERVICE_CATEGORIES.map(cat => cat.value));
 
@@ -42,7 +55,7 @@ const BulletinBoard = () => {
   };
 
   // Function to convert Supabase post to local post format
-  const convertSupabasePost = (supabasePost: Post) => {
+  const convertSupabasePost = (supabasePost: SupabasePost): LocalPost => {
     return {
       id: supabasePost.id,
       fullName: supabasePost.full_name,

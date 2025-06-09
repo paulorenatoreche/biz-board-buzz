@@ -103,17 +103,29 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
         <CardContent className="px-8 pb-8">
           <div className="space-y-6">
             {/* Área do vídeo */}
-            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden border-2 border-dashed border-gray-300">
+            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 relative">
               {!isVideoPlaying ? (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-center">
-                    <Play 
-                      size={48} 
-                      className="mx-auto mb-4 text-gray-400 hover:text-blue-600 cursor-pointer transition-colors"
-                      onClick={handlePlayVideo}
-                    />
-                    <p className="text-gray-500 text-sm">Clique para reproduzir o vídeo</p>
-                    <p className="text-gray-400 text-xs mt-1">Tutorial em vídeo disponível</p>
+                <div className="w-full h-full relative">
+                  {/* Video preview borrado no fundo */}
+                  <video
+                    className="w-full h-full object-cover filter blur-sm"
+                    muted
+                    preload="metadata"
+                  >
+                    <source src="/lovable-uploads/hub.mp4#t=0.1" type="video/mp4" />
+                  </video>
+                  
+                  {/* Overlay com play button */}
+                  <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                    <div className="text-center">
+                      <Play 
+                        size={64} 
+                        className="mx-auto mb-4 text-white hover:text-blue-300 cursor-pointer transition-colors drop-shadow-lg"
+                        onClick={handlePlayVideo}
+                      />
+                      <p className="text-white text-sm font-medium drop-shadow">Clique para reproduzir o vídeo</p>
+                      <p className="text-white text-xs mt-1 opacity-80">Tutorial em vídeo disponível</p>
+                    </div>
                   </div>
                 </div>
               ) : (

@@ -4,10 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SERVICE_CATEGORIES } from "@/utils/serviceCategories";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, Bell } from "lucide-react";
+import { Search, Filter } from "lucide-react";
 import { getPosts, Post as SupabasePost, initializeDatabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import { useNotifications } from "@/hooks/useNotifications";
 
 interface Category {
   value: string;
@@ -35,9 +34,6 @@ const BulletinBoard = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [allCategories, setAllCategories] = useState<Category[]>(SERVICE_CATEGORIES);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Use notifications hook
-  const { notifications, unreadCount } = useNotifications();
 
   // Function to get unique categories from posts
   const getUniqueCategories = (posts: SupabasePost[]) => {
@@ -204,22 +200,6 @@ const BulletinBoard = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            {unreadCount > 0 && (
-              <div className="relative">
-                <Button 
-                  variant="outline" 
-                  className="bg-white border-gray-300 text-gray-700 hover:bg-gray-100 hover:scale-105 h-12 rounded-lg shadow-sm"
-                >
-                  <Bell size={16} className="mr-2" />
-                  Notificações
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {unreadCount}
-                    </span>
-                  )}
-                </Button>
-              </div>
-            )}
             {(searchTerm || selectedCategory) && (
               <Button 
                 variant="outline" 

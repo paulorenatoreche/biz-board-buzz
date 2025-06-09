@@ -24,7 +24,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
   };
 
   const handlePlayVideo = () => {
-    console.log("Iniciando reprodução do vídeo do YouTube...");
+    console.log("Iniciando reprodução do vídeo do Vimeo...");
     setIsVideoPlaying(true);
   };
 
@@ -102,10 +102,10 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                 <div className="relative w-full h-full">
                   <iframe
                     className="w-full h-full"
-                    src="https://www.youtube.com/embed/AQk1d-B3pI8?autoplay=1&rel=0&showinfo=0&modestbranding=1&controls=1&fs=0&cc_load_policy=0&iv_load_policy=3"
+                    src="https://player.vimeo.com/video/1091837514?autoplay=1&title=0&byline=0&portrait=0&badge=0&controls=1&loop=0&autopause=0&pip=0&quality_selector=0&speed=0&keyboard=0&fullscreen=0"
                     title="Tutorial Hub de Negócios"
                     frameBorder="0"
-                    allow="autoplay; encrypted-media"
+                    allow="autoplay; picture-in-picture; clipboard-write; encrypted-media"
                     allowFullScreen={false}
                     style={{ 
                       pointerEvents: 'auto',

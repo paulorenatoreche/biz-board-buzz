@@ -10,7 +10,6 @@ interface TutorialProps {
 
 const Tutorial = ({ onComplete }: TutorialProps) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const [videoEnded, setVideoEnded] = useState(false);
 
   const handleSkip = () => {
     console.log("Tutorial pulado!");
@@ -101,15 +100,12 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
               ) : (
                 <iframe
                   className="w-full h-full"
-                  src="https://www.youtube.com/embed/AQk1d-B3pI8?autoplay=1&rel=0"
+                  src="https://www.youtube-nocookie.com/embed/AQk1d-B3pI8?autoplay=1&rel=0&modestbranding=1&showinfo=0&controls=1&fs=1&iv_load_policy=3&disablekb=1"
                   title="Tutorial Hub de Negócios"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
-                  onLoad={() => {
-                    console.log("Vídeo do YouTube carregado com sucesso!");
-                    setVideoEnded(false);
-                  }}
+                  style={{ pointerEvents: 'auto' }}
                 />
               )}
             </div>

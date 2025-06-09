@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import PostIt from "./PostIt";
 import { Input } from "@/components/ui/input";
@@ -114,19 +115,32 @@ const BulletinBoard = () => {
     return expiryDate > new Date();
   });
 
-  // Apply search and category filters
-  const filteredPosts = validPosts.filter(post => {
-    const matchesSearch = 
-      searchTerm === "" || 
+  // Apply search filter first (without category filter)
+  const searchFilteredPosts = validPosts.filter(post => {
+    return searchTerm === "" || 
       post.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.category.label.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  // Get categories that should be displayed based on search results
+  const displayCategories = allCategories.filter(category => {
+    if (category.value === "other") return false;
     
+    // If no search term, show all categories
+    if (searchTerm === "") return true;
+    
+    // Show only categories that have posts matching the search
+    return searchFilteredPosts.some(post => post.category.value === category.value);
+  });
+
+  // Apply both search and category filters for final results
+  const filteredPosts = searchFilteredPosts.filter(post => {
     const matchesCategory = 
       selectedCategory === null || 
       post.category.value === selectedCategory;
     
-    return matchesSearch && matchesCategory;
+    return matchesCategory;
   });
 
   const handleCategoryClick = (categoryValue: string) => {
@@ -206,9 +220,7 @@ const BulletinBoard = () => {
           </div>
           
           <div className="flex flex-wrap gap-2">
-            {allCategories
-              .filter(category => category.value !== "other")
-              .map((category, index) => {
+            {displayCategories.map((category, index) => {
                 const colors = [
                   'bg-blue-100 text-blue-700 border-blue-200',
                   'bg-green-100 text-green-700 border-green-200',

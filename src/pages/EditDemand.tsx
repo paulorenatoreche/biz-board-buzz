@@ -167,18 +167,13 @@ const EditDemand = () => {
         category_color: finalCategory.color,
       };
 
-      console.log('Attempting to update post with ID:', id);
-      console.log('Updates:', updates);
-
       // Try to update in Supabase first
       const updatedPost = await updatePost(id!, updates);
       
       if (updatedPost) {
-        console.log('Post updated successfully in Supabase');
         toast.success("Oportunidade atualizada com sucesso!");
         navigate("/");
       } else {
-        console.log('Supabase update failed, trying localStorage...');
         // Fallback to localStorage
         const existingPostsJSON = localStorage.getItem('bulletinPosts');
         if (existingPostsJSON) {
@@ -200,12 +195,8 @@ const EditDemand = () => {
             toast.success("Oportunidade atualizada com sucesso!");
             navigate("/");
           } else {
-            console.error('Post not found in localStorage either');
-            toast.error("Oportunidade não encontrada para atualização.");
+            toast.error("Oportunidade não encontrada.");
           }
-        } else {
-          console.error('No posts found in localStorage');
-          toast.error("Oportunidade não encontrada para atualização.");
         }
       }
     } catch (error) {

@@ -40,7 +40,6 @@ interface PostItProps {
 
 const PostIt = ({ post, onDelete, onUpdate }: PostItProps) => {
   const [showDetails, setShowDetails] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
 
   const currentUserId = getCurrentUserId();
@@ -65,34 +64,24 @@ const PostIt = ({ post, onDelete, onUpdate }: PostItProps) => {
       return;
     }
 
-    if (isDeleting) return; // Prevent double clicks
-
-    setIsDeleting(true);
-    console.log('Iniciando exclusão do post:', post.id);
-    console.log('Current user ID:', currentUserId);
-    console.log('Post creator ID:', post.creatorId);
-
     try {
       // Try to delete from Supabase first
-      console.log('Tentando excluir do Supabase...');
       const success = await deletePost(post.id);
       
       if (success) {
-        console.log('Post excluído com sucesso do Supabase');
         toast.success("Publicação excluída com sucesso!");
         setShowDetails(false);
-        
-        // Call the delete callback for immediate UI update
-        if (onDelete) {
-          onDelete(post.id);
-        }
         
         // Call the update callback to refresh the list
         if (onUpdate) {
           onUpdate();
         }
+        
+        // Also call the delete callback for immediate UI update
+        if (onDelete) {
+          onDelete(post.id);
+        }
       } else {
-        console.log('Falha ao excluir do Supabase, tentando localStorage...');
         // Fallback to localStorage if Supabase fails
         const storedPosts = localStorage.getItem('bulletinPosts');
         if (storedPosts) {
@@ -106,18 +95,15 @@ const PostIt = ({ post, onDelete, onUpdate }: PostItProps) => {
           if (onDelete) {
             onDelete(post.id);
           }
-        } else {
-          throw new Error('Não foi possível excluir o post');
         }
       }
     } catch (error) {
       console.error('Erro ao excluir publicação:', error);
       toast.error("Erro ao excluir publicação. Tente novamente.");
-    } finally {
-      setIsDeleting(false);
     }
   };
 
+  // Calculate days remaining until expiration
   const daysRemaining = () => {
     const now = new Date();
     const expiryDate = new Date(post.expiresAt);
@@ -126,6 +112,7 @@ const PostIt = ({ post, onDelete, onUpdate }: PostItProps) => {
     return diffDays;
   };
 
+  // Function to truncate company name if too long
   const truncateCompanyName = (name: string, maxLength: number = 25) => {
     if (name.length <= maxLength) return name;
     return name.substring(0, maxLength-8) + "...";
@@ -257,8 +244,7 @@ const PostIt = ({ post, onDelete, onUpdate }: PostItProps) => {
                       <TooltipTrigger asChild>
                         <AlertDialogTrigger asChild>
                           <Button
-                            disabled={isDeleting}
-                            className="w-8 h-8 p-0 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 hover:text-red-700 shadow-sm flex-shrink-0 hover:scale-110 transition-transform duration-200 mt-4 disabled:opacity-50"
+                            className="w-8 h-8 p-0 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 hover:text-red-700 shadow-sm flex-shrink-0 hover:scale-110 transition-transform duration-200 mt-4"
                             variant="outline"
                           >
                             <Trash size={14} />
@@ -282,10 +268,9 @@ const PostIt = ({ post, onDelete, onUpdate }: PostItProps) => {
                         </AlertDialogCancel>
                         <AlertDialogAction 
                           onClick={handleDelete}
-                          disabled={isDeleting}
-                          className="bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                          className="bg-red-600 text-white hover:bg-red-700"
                         >
-                          {isDeleting ? 'Excluindo...' : 'Excluir'}
+                          Excluir
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>

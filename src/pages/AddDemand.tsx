@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -52,7 +51,6 @@ const AddDemand = () => {
   };
 
   const handleSubmit = async (data: FormData) => {
-    console.log("Starting form submission...", data);
     setIsSubmitting(true);
     
     try {
@@ -74,8 +72,6 @@ const AddDemand = () => {
         };
       }
       
-      console.log("Final category:", finalCategory);
-      
       const newPost = {
         full_name: data.fullName,
         company_name: data.companyName,
@@ -89,18 +85,13 @@ const AddDemand = () => {
         creator_id: getCurrentUserId(),
       };
       
-      console.log("New post object:", newPost);
-      
-      // Try to save to Supabase first
+      // Save to Supabase
       const createdPost = await createPost(newPost);
-      console.log("Supabase response:", createdPost);
       
       if (createdPost) {
-        toast.success("Oportunidade publicada no Supabase com sucesso!");
+        toast.success("Oportunidade publicada com sucesso!");
         navigate("/");
       } else {
-        console.log("Supabase failed, falling back to localStorage");
-        
         // Fallback to localStorage if Supabase fails
         const localPost = {
           id: Date.now().toString(),
@@ -117,46 +108,15 @@ const AddDemand = () => {
         
         const existingPostsJSON = localStorage.getItem('bulletinPosts');
         const existingPosts = existingPostsJSON ? JSON.parse(existingPostsJSON) : [];
-        const updatedPosts = [localPost, ...existingPosts];
+        const updatedPosts = [...existingPosts, localPost];
         localStorage.setItem('bulletinPosts', JSON.stringify(updatedPosts));
         
-        toast.success("Oportunidade salva localmente!");
+        toast.success("Oportunidade publicada com sucesso!");
         navigate("/");
       }
     } catch (error) {
       console.error("Error submitting post:", error);
-      toast.error("Falha ao publicar a oportunidade. Salvando localmente...");
-      
-      // Emergency fallback
-      try {
-        const localPost = {
-          id: Date.now().toString(),
-          fullName: data.fullName,
-          companyName: data.companyName,
-          description: data.description,
-          email: data.email,
-          phone: data.phone,
-          category: {
-            value: data.category,
-            label: SERVICE_CATEGORIES.find(cat => cat.value === data.category)?.label || data.customCategory,
-            color: "#E5E7EB"
-          },
-          createdAt: new Date().toISOString(),
-          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          creatorId: getCurrentUserId(),
-        };
-        
-        const existingPostsJSON = localStorage.getItem('bulletinPosts');
-        const existingPosts = existingPostsJSON ? JSON.parse(existingPostsJSON) : [];
-        const updatedPosts = [localPost, ...existingPosts];
-        localStorage.setItem('bulletinPosts', JSON.stringify(updatedPosts));
-        
-        toast.success("Oportunidade salva localmente como backup!");
-        navigate("/");
-      } catch (localError) {
-        console.error("Emergency fallback also failed:", localError);
-        toast.error("Erro crítico ao salvar. Tente novamente.");
-      }
+      toast.error("Falha ao publicar a oportunidade. Tente novamente.");
     } finally {
       setIsSubmitting(false);
     }

@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = 'https://imntrqfsmcbsbtpjndmm.supabase.co'
@@ -31,7 +32,6 @@ export const createPostsTable = async () => {
 
 // Function to get all posts
 export const getPosts = async (): Promise<Post[]> => {
-  console.log('Fetching posts from Supabase...');
   const { data, error } = await supabase
     .from('posts')
     .select('*')
@@ -42,174 +42,91 @@ export const getPosts = async (): Promise<Post[]> => {
     return []
   }
 
-  console.log('Posts fetched successfully:', data?.length || 0, 'posts');
   return data || []
 }
 
 // Function to create a new post
 export const createPost = async (post: Omit<Post, 'id' | 'created_at'>): Promise<Post | null> => {
-  console.log('Creating post in Supabase:', post);
-  
-  try {
-    const { data, error } = await supabase
-      .from('posts')
-      .insert([{
-        full_name: post.full_name,
-        company_name: post.company_name,
-        description: post.description,
-        email: post.email,
-        phone: post.phone,
-        category_value: post.category_value,
-        category_label: post.category_label,
-        category_color: post.category_color,
-        expires_at: post.expires_at,
-        creator_id: post.creator_id
-      }])
-      .select()
-      .single()
+  const { data, error } = await supabase
+    .from('posts')
+    .insert([{
+      full_name: post.full_name,
+      company_name: post.company_name,
+      description: post.description,
+      email: post.email,
+      phone: post.phone,
+      category_value: post.category_value,
+      category_label: post.category_label,
+      category_color: post.category_color,
+      expires_at: post.expires_at,
+      creator_id: post.creator_id
+    }])
+    .select()
+    .single()
 
-    if (error) {
-      console.error('Supabase error creating post:', error);
-      return null
-    }
-
-    console.log('Post created successfully in Supabase:', data);
-    return data
-  } catch (err) {
-    console.error('Network or other error creating post:', err);
+  if (error) {
+    console.error('Error creating post:', error)
     return null
   }
+
+  return data
 }
 
 // Function to update a post
 export const updatePost = async (id: string, updates: Partial<Post>): Promise<Post | null> => {
-  console.log('Updating post with ID:', id);
-  console.log('Updates to apply:', updates);
-  
-  try {
-    // First, check if the post exists
-    const { data: existingPost, error: selectError } = await supabase
-      .from('posts')
-      .select('id, creator_id')
-      .eq('id', id)
-      .single()
+  const { data, error } = await supabase
+    .from('posts')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
 
-    if (selectError) {
-      console.error('Error finding post to update:', selectError);
-      return null;
-    }
-
-    if (!existingPost) {
-      console.error('Post not found with ID:', id);
-      return null;
-    }
-
-    console.log('Found post to update:', existingPost);
-
-    // Now attempt to update
-    const { data, error } = await supabase
-      .from('posts')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Error updating post:', error)
-      return null
-    }
-
-    console.log('Post updated successfully:', data);
-    return data
-  } catch (err) {
-    console.error('Network or other error updating post:', err);
-    return null;
+  if (error) {
+    console.error('Error updating post:', error)
+    return null
   }
+
+  return data
 }
 
 // Function to delete a post
 export const deletePost = async (id: string): Promise<boolean> => {
-  console.log('Attempting to delete post with ID:', id);
-  
-  try {
-    // First, let's check if the post exists
-    const { data: existingPost, error: selectError } = await supabase
-      .from('posts')
-      .select('id, creator_id')
-      .eq('id', id)
-      .single()
+  const { error } = await supabase
+    .from('posts')
+    .delete()
+    .eq('id', id)
 
-    if (selectError) {
-      console.error('Error finding post to delete:', selectError);
-      return false;
-    }
-
-    if (!existingPost) {
-      console.error('Post not found with ID:', id);
-      return false;
-    }
-
-    console.log('Found post to delete:', existingPost);
-
-    // Now attempt to delete
-    const { error: deleteError } = await supabase
-      .from('posts')
-      .delete()
-      .eq('id', id)
-
-    if (deleteError) {
-      console.error('Error deleting post:', deleteError);
-      return false;
-    }
-
-    console.log('Post deleted successfully from Supabase');
-    return true;
-  } catch (err) {
-    console.error('Network or other error deleting post:', err);
-    return false;
+  if (error) {
+    console.error('Error deleting post:', error)
+    return false
   }
+
+  return true
 }
 
 // Function to initialize the database
 export const initializeDatabase = async () => {
-  console.log('Initializing database...');
-  
-  // First check if the table exists by trying to fetch from it
-  const { data, error: selectError } = await supabase
-    .from('posts')
-    .select('id')
-    .limit(1)
-  
-  if (selectError) {
-    console.log('Table does not exist, trying to create it:', selectError.message);
-    
-    // Try to create the table using raw SQL
-    const { error: createError } = await supabase.rpc('exec', {
-      sql: `
-        CREATE TABLE IF NOT EXISTS posts (
-          id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-          full_name TEXT NOT NULL,
-          company_name TEXT NOT NULL,
-          description TEXT NOT NULL,
-          email TEXT NOT NULL,
-          phone TEXT NOT NULL,
-          category_value TEXT NOT NULL,
-          category_label TEXT NOT NULL,
-          category_color TEXT NOT NULL,
-          expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
-          creator_id TEXT,
-          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-        );
-      `
-    });
+  // First, let's try to create the table manually
+  const { error } = await supabase.rpc('exec', {
+    sql: `
+      CREATE TABLE IF NOT EXISTS posts (
+        id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+        full_name TEXT NOT NULL,
+        company_name TEXT NOT NULL,
+        description TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        category_value TEXT NOT NULL,
+        category_label TEXT NOT NULL,
+        category_color TEXT NOT NULL,
+        expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+        creator_id TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      );
+    `
+  })
 
-    if (createError) {
-      console.error('Error creating table:', createError);
-      console.log('You may need to create the table manually in the Supabase SQL Editor');
-    } else {
-      console.log('Table created successfully');
-    }
-  } else {
-    console.log('Posts table already exists');
+  if (error) {
+    console.log('Note: Table creation might need to be done manually in Supabase SQL Editor')
   }
 }

@@ -203,7 +203,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                     preload="metadata"
                     playsInline
                   >
-                    <source src="/videos/hub.mp4" type="video/mp4" />
+                    <source src="/lovable-uploads/hub.mp4" type="video/mp4" />
                     Seu navegador não suporta reprodução de vídeo.
                   </video>
                 </div>

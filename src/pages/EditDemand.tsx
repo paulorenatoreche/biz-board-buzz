@@ -18,6 +18,7 @@ interface FormData {
   companyName: string;
   description: string;
   category: string;
+  customCategory: string;
 }
 
 const EditDemand = () => {
@@ -25,6 +26,7 @@ const EditDemand = () => {
   const { id } = useParams();
   const [isUpdating, setIsUpdating] = useState(false);
   const [postFound, setPostFound] = useState(true);
+  const [showCustomCategory, setShowCustomCategory] = useState(false);
   
   const form = useForm<FormData>({
     defaultValues: {
@@ -34,6 +36,7 @@ const EditDemand = () => {
       companyName: "",
       description: "",
       category: "",
+      customCategory: "",
     }
   });
 
@@ -45,14 +48,23 @@ const EditDemand = () => {
       const postToEdit = existingPosts.find((post: any) => post.id === id);
       
       if (postToEdit) {
+        // Check if it's a custom category
+        const isCustomCategory = postToEdit.category.value.startsWith('custom-');
+        
         form.reset({
           fullName: postToEdit.fullName,
           phone: postToEdit.phone,
           email: postToEdit.email,
           companyName: postToEdit.companyName,
           description: postToEdit.description,
-          category: postToEdit.category.value,
+          category: isCustomCategory ? "other" : postToEdit.category.value,
+          customCategory: isCustomCategory ? postToEdit.category.label : "",
         });
+        
+        // Set showCustomCategory if it's a custom category
+        if (isCustomCategory) {
+          setShowCustomCategory(true);
+        }
       } else {
         setPostFound(false);
       }
@@ -60,6 +72,16 @@ const EditDemand = () => {
       setPostFound(false);
     }
   }, [id, form]);
+
+  const handleCategoryChange = (value: string) => {
+    form.setValue("category", value);
+    if (value === "other") {
+      setShowCustomCategory(true);
+    } else {
+      setShowCustomCategory(false);
+      form.setValue("customCategory", "");
+    }
+  };
 
   const handleSubmit = async (data: FormData) => {
     setIsUpdating(true);
@@ -80,8 +102,23 @@ const EditDemand = () => {
         return;
       }
       
-      // Find the selected category object
-      const selectedCategory = SERVICE_CATEGORIES.find(cat => cat.value === data.category);
+      // Handle category selection
+      let finalCategory;
+      if (data.category === "other" && data.customCategory.trim()) {
+        finalCategory = {
+          value: `custom-${data.customCategory.toLowerCase().replace(/\s+/g, '-')}`,
+          label: data.customCategory.trim(),
+          color: "#E5E7EB",
+        };
+      } else {
+        // Find the selected category object
+        const selectedCategory = SERVICE_CATEGORIES.find(cat => cat.value === data.category);
+        finalCategory = {
+          value: data.category,
+          label: selectedCategory?.label || "",
+          color: selectedCategory?.color || "#F1F0FB",
+        };
+      }
       
       // Update the post
       existingPosts[postIndex] = {
@@ -91,11 +128,7 @@ const EditDemand = () => {
         description: data.description,
         email: data.email,
         phone: data.phone,
-        category: {
-          value: data.category,
-          label: selectedCategory?.label || "",
-          color: selectedCategory?.color || "#F1F0FB",
-        },
+        category: finalCategory,
       };
       
       // Save back to localStorage
@@ -256,7 +289,7 @@ const EditDemand = () => {
                       <FormItem>
                         <FormLabel className="text-gray-700 font-semibold">Categoria do Serviço</FormLabel>
                         <Select 
-                          onValueChange={field.onChange} 
+                          onValueChange={handleCategoryChange} 
                           value={field.value}
                           required
                         >
@@ -276,6 +309,26 @@ const EditDemand = () => {
                       </FormItem>
                     )}
                   />
+
+                  {showCustomCategory && (
+                    <FormField
+                      control={form.control}
+                      name="customCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 font-semibold">Categoria Personalizada</FormLabel>
+                          <FormControl>
+                            <Input 
+                              required={showCustomCategory}
+                              {...field} 
+                              className="bg-gray-50 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 h-12 rounded-lg"
+                              placeholder="Digite sua categoria personalizada"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  )}
                   
                   <FormField
                     control={form.control}

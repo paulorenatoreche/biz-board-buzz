@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Play, X, CheckCircle, Pause } from "lucide-react";
+import { Play, X, CheckCircle, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
 interface TutorialProps {
@@ -160,7 +160,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                   variant="outline"
                   className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-12 px-6 rounded-lg"
                 >
-                  <Pause size={16} className="mr-2" />
+                  <ArrowLeft size={16} className="mr-2" />
                   Voltar
                 </Button>
                 <Button 

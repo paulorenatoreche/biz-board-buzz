@@ -10,6 +10,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/
 import { useForm } from "react-hook-form";
 import { ArrowLeft, Edit } from "lucide-react";
 import { SERVICE_CATEGORIES } from "@/utils/serviceCategories";
+import { getPosts, updatePost, Post } from "@/lib/supabase";
+import { getCurrentUserId } from "@/utils/postUtils";
 
 interface FormData {
   fullName: string;
@@ -28,6 +30,7 @@ const EditDemand = () => {
   const [postFound, setPostFound] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(true);
   const [showCustomCategory, setShowCustomCategory] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
   const form = useForm<FormData>({
     defaultValues: {
@@ -41,53 +44,84 @@ const EditDemand = () => {
     }
   });
 
-  // Gerar ou recuperar ID único do usuário
-  const getCurrentUserId = () => {
-    let userId = localStorage.getItem('currentUserId');
-    if (!userId) {
-      userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('currentUserId', userId);
-    }
-    return userId;
-  };
-
   useEffect(() => {
-    // Load the post data from localStorage
-    const existingPostsJSON = localStorage.getItem('bulletinPosts');
-    if (existingPostsJSON) {
-      const existingPosts = JSON.parse(existingPostsJSON);
-      const postToEdit = existingPosts.find((post: any) => post.id === id);
-      
-      if (postToEdit) {
-        // Verificar se o usuário atual é o criador do post
-        const currentUserId = getCurrentUserId();
-        if (postToEdit.creatorId && postToEdit.creatorId !== currentUserId) {
-          setIsAuthorized(false);
-          return;
-        }
+    const loadPost = async () => {
+      setIsLoading(true);
+      try {
+        // Try to load from Supabase first
+        const posts = await getPosts();
+        const postToEdit = posts.find((post: Post) => post.id === id);
+        
+        if (postToEdit) {
+          // Check authorization
+          const currentUserId = getCurrentUserId();
+          if (postToEdit.creator_id && postToEdit.creator_id !== currentUserId) {
+            setIsAuthorized(false);
+            return;
+          }
 
-        // Check if it's a custom category
-        const isCustomCategory = postToEdit.category.value.startsWith('custom-');
-        
-        form.reset({
-          fullName: postToEdit.fullName,
-          phone: postToEdit.phone,
-          email: postToEdit.email,
-          companyName: postToEdit.companyName,
-          description: postToEdit.description,
-          category: isCustomCategory ? "other" : postToEdit.category.value,
-          customCategory: isCustomCategory ? postToEdit.category.label : "",
-        });
-        
-        // Set showCustomCategory if it's a custom category
-        if (isCustomCategory) {
-          setShowCustomCategory(true);
+          // Check if it's a custom category
+          const isCustomCategory = postToEdit.category_value.startsWith('custom-');
+          
+          form.reset({
+            fullName: postToEdit.full_name,
+            phone: postToEdit.phone,
+            email: postToEdit.email,
+            companyName: postToEdit.company_name,
+            description: postToEdit.description,
+            category: isCustomCategory ? "other" : postToEdit.category_value,
+            customCategory: isCustomCategory ? postToEdit.category_label : "",
+          });
+          
+          if (isCustomCategory) {
+            setShowCustomCategory(true);
+          }
+        } else {
+          // Fallback to localStorage
+          const existingPostsJSON = localStorage.getItem('bulletinPosts');
+          if (existingPostsJSON) {
+            const existingPosts = JSON.parse(existingPostsJSON);
+            const localPost = existingPosts.find((post: any) => post.id === id);
+            
+            if (localPost) {
+              const currentUserId = getCurrentUserId();
+              if (localPost.creatorId && localPost.creatorId !== currentUserId) {
+                setIsAuthorized(false);
+                return;
+              }
+
+              const isCustomCategory = localPost.category.value.startsWith('custom-');
+              
+              form.reset({
+                fullName: localPost.fullName,
+                phone: localPost.phone,
+                email: localPost.email,
+                companyName: localPost.companyName,
+                description: localPost.description,
+                category: isCustomCategory ? "other" : localPost.category.value,
+                customCategory: isCustomCategory ? localPost.category.label : "",
+              });
+              
+              if (isCustomCategory) {
+                setShowCustomCategory(true);
+              }
+            } else {
+              setPostFound(false);
+            }
+          } else {
+            setPostFound(false);
+          }
         }
-      } else {
+      } catch (error) {
+        console.error('Error loading post:', error);
         setPostFound(false);
+      } finally {
+        setIsLoading(false);
       }
-    } else {
-      setPostFound(false);
+    };
+
+    if (id) {
+      loadPost();
     }
   }, [id, form]);
 
@@ -105,21 +139,6 @@ const EditDemand = () => {
     setIsUpdating(true);
     
     try {
-      // Get existing posts from localStorage
-      const existingPostsJSON = localStorage.getItem('bulletinPosts');
-      if (!existingPostsJSON) {
-        toast.error("Erro ao encontrar a oportunidade.");
-        return;
-      }
-      
-      const existingPosts = JSON.parse(existingPostsJSON);
-      const postIndex = existingPosts.findIndex((post: any) => post.id === id);
-      
-      if (postIndex === -1) {
-        toast.error("Oportunidade não encontrada.");
-        return;
-      }
-      
       // Handle category selection
       let finalCategory;
       if (data.category === "other" && data.customCategory.trim()) {
@@ -129,7 +148,6 @@ const EditDemand = () => {
           color: "#E5E7EB",
         };
       } else {
-        // Find the selected category object
         const selectedCategory = SERVICE_CATEGORIES.find(cat => cat.value === data.category);
         finalCategory = {
           value: data.category,
@@ -137,25 +155,50 @@ const EditDemand = () => {
           color: selectedCategory?.color || "#F1F0FB",
         };
       }
-      
-      // Update the post
-      existingPosts[postIndex] = {
-        ...existingPosts[postIndex],
-        fullName: data.fullName,
-        companyName: data.companyName,
+
+      const updates = {
+        full_name: data.fullName,
+        company_name: data.companyName,
         description: data.description,
         email: data.email,
         phone: data.phone,
-        category: finalCategory,
+        category_value: finalCategory.value,
+        category_label: finalCategory.label,
+        category_color: finalCategory.color,
       };
+
+      // Try to update in Supabase first
+      const updatedPost = await updatePost(id!, updates);
       
-      // Save back to localStorage
-      localStorage.setItem('bulletinPosts', JSON.stringify(existingPosts));
-      
-      toast.success("Oportunidade atualizada com sucesso!");
-      
-      // Navigate back to the home page
-      navigate("/");
+      if (updatedPost) {
+        toast.success("Oportunidade atualizada com sucesso!");
+        navigate("/");
+      } else {
+        // Fallback to localStorage
+        const existingPostsJSON = localStorage.getItem('bulletinPosts');
+        if (existingPostsJSON) {
+          const existingPosts = JSON.parse(existingPostsJSON);
+          const postIndex = existingPosts.findIndex((post: any) => post.id === id);
+          
+          if (postIndex !== -1) {
+            existingPosts[postIndex] = {
+              ...existingPosts[postIndex],
+              fullName: data.fullName,
+              companyName: data.companyName,
+              description: data.description,
+              email: data.email,
+              phone: data.phone,
+              category: finalCategory,
+            };
+            
+            localStorage.setItem('bulletinPosts', JSON.stringify(existingPosts));
+            toast.success("Oportunidade atualizada com sucesso!");
+            navigate("/");
+          } else {
+            toast.error("Oportunidade não encontrada.");
+          }
+        }
+      }
     } catch (error) {
       console.error("Error updating post:", error);
       toast.error("Falha ao atualizar a oportunidade. Tente novamente.");
@@ -163,6 +206,31 @@ const EditDemand = () => {
       setIsUpdating(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgb(60, 71, 157) 0%, rgb(45, 55, 135) 50%, rgb(30, 40, 115) 100%)' }}>
+        <div className="relative z-10 text-white">
+          <div className="container mx-auto px-4 py-8">
+            <div className="flex items-center gap-4 mb-8">
+              <Button
+                onClick={() => navigate("/")}
+                variant="ghost"
+                className="text-white hover:bg-white/10 hover:scale-105 p-2 rounded-lg"
+              >
+                <ArrowLeft size={24} />
+              </Button>
+              <h1 className="text-3xl md:text-4xl font-bold">Carregando...</h1>
+            </div>
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+              <p className="text-white/80">Carregando dados da oportunidade...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!postFound) {
     return (

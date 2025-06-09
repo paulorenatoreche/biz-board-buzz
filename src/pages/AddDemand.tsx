@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { ArrowLeft, Plus } from "lucide-react";
 import { SERVICE_CATEGORIES } from "@/utils/serviceCategories";
 import { getCurrentUserId } from "@/utils/postUtils";
+import { createPost } from "@/lib/supabase";
 
 interface FormData {
   fullName: string;
@@ -73,32 +73,47 @@ const AddDemand = () => {
       }
       
       const newPost = {
-        id: Date.now().toString(),
-        fullName: data.fullName,
-        companyName: data.companyName,
+        full_name: data.fullName,
+        company_name: data.companyName,
         description: data.description,
         email: data.email,
         phone: data.phone,
-        category: finalCategory,
-        createdAt: new Date().toISOString(),
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
-        creatorId: getCurrentUserId(), // Adicionar o ID do criador
+        category_value: finalCategory.value,
+        category_label: finalCategory.label,
+        category_color: finalCategory.color,
+        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+        creator_id: getCurrentUserId(),
       };
       
-      // Get existing posts from localStorage
-      const existingPostsJSON = localStorage.getItem('bulletinPosts');
-      const existingPosts = existingPostsJSON ? JSON.parse(existingPostsJSON) : [];
+      // Save to Supabase
+      const createdPost = await createPost(newPost);
       
-      // Add the new post
-      const updatedPosts = [...existingPosts, newPost];
-      
-      // Save back to localStorage
-      localStorage.setItem('bulletinPosts', JSON.stringify(updatedPosts));
-      
-      toast.success("Oportunidade publicada com sucesso!");
-      
-      // Navigate back to the home page
-      navigate("/");
+      if (createdPost) {
+        toast.success("Oportunidade publicada com sucesso!");
+        navigate("/");
+      } else {
+        // Fallback to localStorage if Supabase fails
+        const localPost = {
+          id: Date.now().toString(),
+          fullName: data.fullName,
+          companyName: data.companyName,
+          description: data.description,
+          email: data.email,
+          phone: data.phone,
+          category: finalCategory,
+          createdAt: new Date().toISOString(),
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          creatorId: getCurrentUserId(),
+        };
+        
+        const existingPostsJSON = localStorage.getItem('bulletinPosts');
+        const existingPosts = existingPostsJSON ? JSON.parse(existingPostsJSON) : [];
+        const updatedPosts = [...existingPosts, localPost];
+        localStorage.setItem('bulletinPosts', JSON.stringify(updatedPosts));
+        
+        toast.success("Oportunidade publicada com sucesso!");
+        navigate("/");
+      }
     } catch (error) {
       console.error("Error submitting post:", error);
       toast.error("Falha ao publicar a oportunidade. Tente novamente.");
@@ -139,6 +154,7 @@ const AddDemand = () => {
             <CardContent className="px-8 pb-8">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+                  
                   <FormField
                     control={form.control}
                     name="fullName"

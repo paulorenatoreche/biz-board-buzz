@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { SERVICE_CATEGORIES } from "@/utils/serviceCategories";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter } from "lucide-react";
+import { getPosts, Post, initializeDatabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 interface Category {
   value: string;
@@ -13,41 +15,12 @@ interface Category {
   color: string;
 }
 
-interface Post {
-  id: string;
-  fullName: string;
-  companyName: string;
-  description: string;
-  email: string;
-  phone: string;
-  category: Category;
-  createdAt: string;
-  expiresAt: string;
-}
-
-const MOCK_POSTS = [
-  {
-    id: "1",
-    fullName: "John Smith",
-    companyName: "Tech Innovations Ltd",
-    description: "Looking for software development partners for a new fintech solution. Experience in payment processing required.",
-    email: "john@example.com",
-    phone: "123-456-7890",
-    category: {
-      value: "electrical-project",
-      label: "Electrical Project",
-      color: "#FEF7CD"
-    },
-    createdAt: new Date().toISOString(),
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-  }
-];
-
 const BulletinBoard = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [allCategories, setAllCategories] = useState<Category[]>(SERVICE_CATEGORIES);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Function to get unique categories from posts
   const getUniqueCategories = (posts: Post[]) => {
@@ -55,59 +28,71 @@ const BulletinBoard = () => {
     const usedValues = new Set(SERVICE_CATEGORIES.map(cat => cat.value));
 
     posts.forEach(post => {
-      if (!usedValues.has(post.category.value)) {
-        customCategories.push(post.category);
-        usedValues.add(post.category.value);
+      if (!usedValues.has(post.category_value)) {
+        customCategories.push({
+          value: post.category_value,
+          label: post.category_label,
+          color: post.category_color
+        });
+        usedValues.add(post.category_value);
       }
     });
 
     return [...SERVICE_CATEGORIES, ...customCategories];
   };
 
-  // Effect to load posts from localStorage
+  // Function to convert Supabase post to local post format
+  const convertSupabasePost = (supabasePost: Post) => {
+    return {
+      id: supabasePost.id,
+      fullName: supabasePost.full_name,
+      companyName: supabasePost.company_name,
+      description: supabasePost.description,
+      email: supabasePost.email,
+      phone: supabasePost.phone,
+      category: {
+        value: supabasePost.category_value,
+        label: supabasePost.category_label,
+        color: supabasePost.category_color
+      },
+      createdAt: supabasePost.created_at,
+      expiresAt: supabasePost.expires_at,
+      creatorId: supabasePost.creator_id
+    };
+  };
+
+  // Effect to load posts from Supabase
   useEffect(() => {
-    const loadPosts = () => {
-      // Retrieve posts from localStorage
-      const storedPosts = localStorage.getItem('bulletinPosts');
-      
-      if (storedPosts) {
-        const parsedPosts = JSON.parse(storedPosts);
-        setPosts(parsedPosts);
-        setAllCategories(getUniqueCategories(parsedPosts));
-      } else {
-        // Initialize with mock data if no posts are stored
-        setPosts(MOCK_POSTS);
-        localStorage.setItem('bulletinPosts', JSON.stringify(MOCK_POSTS));
-        setAllCategories(getUniqueCategories(MOCK_POSTS));
+    const loadPosts = async () => {
+      setIsLoading(true);
+      try {
+        // Initialize database first
+        await initializeDatabase();
+        
+        // Get posts from Supabase
+        const supabasePosts = await getPosts();
+        
+        // Convert to local format
+        const convertedPosts = supabasePosts.map(convertSupabasePost);
+        
+        setPosts(convertedPosts);
+        setAllCategories(getUniqueCategories(supabasePosts));
+      } catch (error) {
+        console.error('Error loading posts:', error);
+        toast.error('Erro ao carregar posts. Tentando novamente...');
+        
+        // Fallback to localStorage if Supabase fails
+        const storedPosts = localStorage.getItem('bulletinPosts');
+        if (storedPosts) {
+          const parsedPosts = JSON.parse(storedPosts);
+          setPosts(parsedPosts);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    // Load posts initially
     loadPosts();
-
-    // Set interval to check for expired posts every minute
-    const interval = setInterval(() => {
-      const storedPosts = localStorage.getItem('bulletinPosts');
-      if (storedPosts) {
-        const parsedPosts = JSON.parse(storedPosts);
-        
-        // Filter out expired posts
-        const now = new Date();
-        const validPosts = parsedPosts.filter((post: Post) => {
-          const expiryDate = new Date(post.expiresAt);
-          return expiryDate > now;
-        });
-        
-        // If some posts expired, update localStorage and state
-        if (validPosts.length < parsedPosts.length) {
-          localStorage.setItem('bulletinPosts', JSON.stringify(validPosts));
-          setPosts(validPosts);
-          setAllCategories(getUniqueCategories(validPosts));
-        }
-      }
-    }, 60000); // Check every minute
-
-    return () => clearInterval(interval);
   }, []);
 
   // Filter out expired posts for rendering
@@ -133,7 +118,7 @@ const BulletinBoard = () => {
 
   const handleCategoryClick = (categoryValue: string) => {
     if (selectedCategory === categoryValue) {
-      setSelectedCategory(null); // Toggle off if already selected
+      setSelectedCategory(null);
     } else {
       setSelectedCategory(categoryValue);
     }
@@ -148,9 +133,35 @@ const BulletinBoard = () => {
     setPosts(currentPosts => currentPosts.filter(post => post.id !== postId));
   };
 
+  const refreshPosts = async () => {
+    try {
+      const supabasePosts = await getPosts();
+      const convertedPosts = supabasePosts.map(convertSupabasePost);
+      setPosts(convertedPosts);
+      setAllCategories(getUniqueCategories(supabasePosts));
+    } catch (error) {
+      console.error('Error refreshing posts:', error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="relative">
+        <div className="relative -top-8 mb-8 z-40">
+          <div className="bg-white p-6 rounded-xl shadow-2xl border border-white/20 mx-auto max-w-4xl">
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Carregando oportunidades...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
-      {/* Caixa de pesquisa e filtros - posicionada sobre a linha divisória */}
+      {/* Search box and filters */}
       <div className="relative -top-8 mb-8 z-40">
         <div className="bg-white p-6 rounded-xl shadow-2xl border border-white/20 mx-auto max-w-4xl">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -173,11 +184,17 @@ const BulletinBoard = () => {
                 Limpar Filtros
               </Button>
             )}
+            <Button 
+              onClick={refreshPosts}
+              className="bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 h-12 rounded-lg shadow-sm"
+            >
+              Atualizar
+            </Button>
           </div>
           
           <div className="flex flex-wrap gap-2">
             {allCategories
-              .filter(category => category.value !== "other") // Remove "Outro" dos filtros
+              .filter(category => category.value !== "other")
               .map((category, index) => {
                 const colors = [
                   'bg-blue-100 text-blue-700 border-blue-200',
@@ -209,7 +226,7 @@ const BulletinBoard = () => {
         </div>
       </div>
       
-      {/* Conteúdo dos posts */}
+      {/* Posts content */}
       <div className="space-y-6 pb-12">
         {filteredPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -217,13 +234,14 @@ const BulletinBoard = () => {
               <PostIt 
                 key={post.id} 
                 post={post} 
-                onDelete={handlePostDelete}  // ← Adicione esta linha
+                onDelete={handlePostDelete}
+                onUpdate={refreshPosts}
               />
             ))}
           </div>
         ) : (
           <div className="text-center py-12">
-            <div className="bg-white  rounded-xl p-8 shadow-lg border border-gray-200 max-w-md mx-auto">
+            <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-200 max-w-md mx-auto">
               <h3 className="text-xl font-semibold text-gray-700 mb-2">Nenhuma oportunidade encontrada</h3>
               <p className="text-gray-500">Tente ajustar os filtros de pesquisa</p>
             </div>

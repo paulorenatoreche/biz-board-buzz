@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +11,7 @@ import { Mail, Phone, Calendar, Clock, Edit, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/sonner";
 import { getCurrentUserId } from "@/utils/postUtils";
+import { deletePost } from "@/lib/supabase";
 
 interface Category {
   value: string;
@@ -29,15 +29,16 @@ interface Post {
   category: Category;
   createdAt: string;
   expiresAt: string;
-  creatorId?: string; // ID do usuário que criou o post
+  creatorId?: string;
 }
 
 interface PostItProps {
   post: Post;
   onDelete?: (postId: string) => void;
+  onUpdate?: () => void;
 }
 
-const PostIt = ({ post, onDelete }: PostItProps) => {
+const PostIt = ({ post, onDelete, onUpdate }: PostItProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const navigate = useNavigate();
 
@@ -57,31 +58,43 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
     navigate(`/edit-demand/${post.id}`);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!isCreator) {
       toast.error("Apenas o criador do post pode excluí-lo.");
       return;
     }
 
     try {
-      // Get posts from localStorage
-      const storedPosts = localStorage.getItem('bulletinPosts');
-      if (storedPosts) {
-        const posts = JSON.parse(storedPosts);
-        // Filter out the deleted post
-        const updatedPosts = posts.filter((p: Post) => p.id !== post.id);
-        // Update localStorage
-        localStorage.setItem('bulletinPosts', JSON.stringify(updatedPosts));
-        
-        // Show success message
+      // Try to delete from Supabase first
+      const success = await deletePost(post.id);
+      
+      if (success) {
         toast.success("Publicação excluída com sucesso!");
-        
-        // Close dialog
         setShowDetails(false);
         
-        // Chama o callback para atualizar a lista no componente pai
+        // Call the update callback to refresh the list
+        if (onUpdate) {
+          onUpdate();
+        }
+        
+        // Also call the delete callback for immediate UI update
         if (onDelete) {
           onDelete(post.id);
+        }
+      } else {
+        // Fallback to localStorage if Supabase fails
+        const storedPosts = localStorage.getItem('bulletinPosts');
+        if (storedPosts) {
+          const posts = JSON.parse(storedPosts);
+          const updatedPosts = posts.filter((p: Post) => p.id !== post.id);
+          localStorage.setItem('bulletinPosts', JSON.stringify(updatedPosts));
+          
+          toast.success("Publicação excluída com sucesso!");
+          setShowDetails(false);
+          
+          if (onDelete) {
+            onDelete(post.id);
+          }
         }
       }
     } catch (error) {
@@ -99,7 +112,7 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
     return diffDays;
   };
 
-  // Function to truncate company name if too long - reduced max length for consistency
+  // Function to truncate company name if too long
   const truncateCompanyName = (name: string, maxLength: number = 25) => {
     if (name.length <= maxLength) return name;
     return name.substring(0, maxLength-8) + "...";

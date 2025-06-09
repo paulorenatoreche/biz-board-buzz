@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = 'https://imntrqfsmcbsbtpjndmm.supabase.co'
@@ -22,11 +21,39 @@ export interface Post {
   creator_id?: string
 }
 
+// Define the Notification type
+export interface Notification {
+  id: string
+  post_id: string
+  message: string
+  read: boolean
+  created_at: string
+}
+
 // Function to create the posts table if it doesn't exist
 export const createPostsTable = async () => {
   const { error } = await supabase.rpc('create_posts_table')
   if (error) {
     console.log('Posts table might already exist or there was an error:', error)
+  }
+}
+
+// Function to create the notifications table if it doesn't exist
+export const createNotificationsTable = async () => {
+  const { error } = await supabase.rpc('exec', {
+    sql: `
+      CREATE TABLE IF NOT EXISTS notifications (
+        id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+        post_id UUID REFERENCES posts(id) ON DELETE CASCADE,
+        message TEXT NOT NULL,
+        read BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      );
+    `
+  })
+
+  if (error) {
+    console.log('Note: Notifications table creation might need to be done manually in Supabase SQL Editor')
   }
 }
 
@@ -69,7 +96,77 @@ export const createPost = async (post: Omit<Post, 'id' | 'created_at'>): Promise
     return null
   }
 
+  // Create notification when post is created
+  if (data) {
+    await createNotification(data.id, `Novo post criado: ${data.company_name}`)
+  }
+
   return data
+}
+
+// Function to create a notification
+export const createNotification = async (postId: string, message: string): Promise<Notification | null> => {
+  const { data, error } = await supabase
+    .from('notifications')
+    .insert([{
+      post_id: postId,
+      message: message
+    }])
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error creating notification:', error)
+    return null
+  }
+
+  return data
+}
+
+// Function to get unread notifications
+export const getUnreadNotifications = async (): Promise<Notification[]> => {
+  const { data, error } = await supabase
+    .from('notifications')
+    .select('*')
+    .eq('read', false)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching notifications:', error)
+    return []
+  }
+
+  return data || []
+}
+
+// Function to mark notification as read
+export const markNotificationAsRead = async (id: string): Promise<boolean> => {
+  const { error } = await supabase
+    .from('notifications')
+    .update({ read: true })
+    .eq('id', id)
+
+  if (error) {
+    console.error('Error marking notification as read:', error)
+    return false
+  }
+
+  return true
+}
+
+// Function to mark all notifications as read
+export const markAllNotificationsAsRead = async (): Promise<boolean> => {
+  const { error } = await supabase
+    .from('notifications')
+    .update({ read: true })
+    .eq('read', false)
+
+  if (error) {
+    console.error('Error marking all notifications as read:', error)
+    return false
+  }
+
+  return true
 }
 
 // Function to update a post
@@ -129,4 +226,7 @@ export const initializeDatabase = async () => {
   if (error) {
     console.log('Note: Table creation might need to be done manually in Supabase SQL Editor')
   }
+
+  // Also create notifications table
+  await createNotificationsTable()
 }

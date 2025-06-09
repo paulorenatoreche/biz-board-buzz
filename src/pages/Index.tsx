@@ -46,7 +46,7 @@ const Index = () => {
           <div className="max-w-4xl mx-auto flex justify-between items-center relative z-30">
             <Button 
               onClick={() => navigate("/add-demand")}
-              className="bg-white text-blue-600 hover:bg-white hover:scale-105 flex items-center gap-2 shadow-2xl border-0 font-semibold h-12 px-6 rounded-lg"
+              className="bg-slate-800 text-white hover:bg-slate-700 hover:scale-105 flex items-center gap-2 shadow-2xl border-0 font-semibold h-12 px-6 rounded-lg"
             >
               <Plus size={20} />
               Adicionar Oportunidade

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Play, X, CheckCircle, ArrowLeft } from "lucide-react";
@@ -12,6 +12,7 @@ interface TutorialProps {
 const Tutorial = ({ onComplete }: TutorialProps) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleSkip = () => {
     localStorage.setItem("tutorialCompleted", "true");
@@ -27,6 +28,25 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
 
   const handlePlayVideo = () => {
     setIsVideoPlaying(true);
+  };
+
+  const handleVideoLoaded = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 1; // Começa em 1 segundo
+    }
+  };
+
+  const handleVideoTimeUpdate = () => {
+    if (videoRef.current) {
+      const duration = videoRef.current.duration;
+      const currentTime = videoRef.current.currentTime;
+      
+      // Para o vídeo 2 segundos antes do final
+      if (currentTime >= duration - 2) {
+        videoRef.current.pause();
+        setVideoEnded(true);
+      }
+    }
   };
 
   const handleVideoEnded = () => {
@@ -145,9 +165,12 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
               {/* Vídeo real incorporado */}
               <div className="aspect-video bg-black rounded-lg overflow-hidden">
                 <video 
+                  ref={videoRef}
                   controls 
                   autoPlay
                   className="w-full h-full"
+                  onLoadedData={handleVideoLoaded}
+                  onTimeUpdate={handleVideoTimeUpdate}
                   onEnded={handleVideoEnded}
                 >
                   <source src="/lovable-uploads/hub.mp4" type="video/mp4" />

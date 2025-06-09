@@ -29,7 +29,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Fundo borrado */}
       <div 
         className="absolute inset-0 backdrop-blur-md"
@@ -61,14 +61,14 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
       </div>
 
       {/* Conteúdo do tutorial */}
-      <Card className="relative z-50 w-full max-w-2xl mx-auto bg-white border-0 shadow-2xl">
-        <CardHeader className="text-center pb-4 pt-6">
-          <div className="flex justify-between items-start mb-3">
+      <Card className="relative z-50 w-full max-w-4xl mx-4 bg-white border-0 shadow-2xl">
+        <CardHeader className="text-center pb-6 pt-8">
+          <div className="flex justify-between items-start mb-4">
             <div className="flex-1">
-              <h1 className="text-2xl font-bold mb-2" style={{ color: 'rgb(60, 71, 157)' }}>
+              <h1 className="text-3xl font-bold mb-3" style={{ color: 'rgb(60, 71, 157)' }}>
                 Tutorial de Uso
               </h1>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-base">
                 Aprenda como usar o Hub de Negócios em poucos minutos
               </p>
             </div>
@@ -77,21 +77,21 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
               variant="ghost"
               className="text-gray-400 hover:text-gray-600 p-2"
             >
-              <X size={18} />
+              <X size={20} />
             </Button>
           </div>
         </CardHeader>
         
-        <CardContent className="px-6 pb-6">
-          <div className="space-y-4">
+        <CardContent className="px-8 pb-8">
+          <div className="space-y-6">
             {/* Área do vídeo */}
-            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden border-gray-300 relative max-h-64">
+            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden border-gray-300 relative">
               {!isVideoPlaying ? (
                 <div className="w-full h-full relative bg-gray-200 flex items-center justify-center">
                   <div className="text-center">
                     <Play 
-                      size={48} 
-                      className="mx-auto mb-3 text-blue-600 hover:text-blue-800 cursor-pointer transition-colors drop-shadow-lg"
+                      size={64} 
+                      className="mx-auto mb-4 text-blue-600 hover:text-blue-800 cursor-pointer transition-colors drop-shadow-lg"
                       onClick={handlePlayVideo}
                     />
                     <p className="text-gray-700 text-sm font-medium">Clique para reproduzir o vídeo tutorial</p>
@@ -117,43 +117,43 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
             </div>
             
             {/* Informações do tutorial */}
-            <div className="space-y-2">
-              <h3 className="font-semibold text-gray-800 text-sm">O que você vai aprender:</h3>
-              <ul className="space-y-1 text-gray-600 text-sm">
+            <div className="space-y-3">
+              <h3 className="font-semibold text-gray-800">O que você vai aprender:</h3>
+              <ul className="space-y-2 text-gray-600">
                 <li className="flex items-center gap-2">
-                  <CheckCircle size={14} className="text-green-500" />
+                  <CheckCircle size={16} className="text-green-500" />
                   Como adicionar uma nova oportunidade de negócio
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle size={14} className="text-green-500" />
+                  <CheckCircle size={16} className="text-green-500" />
                   Como pesquisar e filtrar oportunidades
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle size={14} className="text-green-500" />
+                  <CheckCircle size={16} className="text-green-500" />
                   Como entrar em contato com outros empresários
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle size={14} className="text-green-500" />
+                  <CheckCircle size={16} className="text-green-500" />
                   Como editar suas oportunidades publicadas
                 </li>
               </ul>
             </div>
             
-            <div className="flex gap-3 pt-3">
+            <div className="flex gap-3 pt-4">
               <Button 
                 onClick={handleComplete}
-                className="flex-1 text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-10"
+                className="flex-1 text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-12"
                 style={{
                   background: 'linear-gradient(135deg, rgb(60, 71, 157), rgb(45, 55, 135))'
                 }}
               >
-                <CheckCircle size={14} className="mr-2" />
+                <CheckCircle size={16} className="mr-2" />
                 Concluir Tutorial
               </Button>
               <Button 
                 onClick={handleSkip}
                 variant="outline"
-                className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-10 px-4 rounded-lg"
+                className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-12 px-6 rounded-lg"
               >
                 Pular Tutorial
               </Button>

@@ -64,7 +64,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
 
   const handleVideoError = (e: any) => {
     console.error("Erro ao carregar vídeo:", e);
-    console.error("Caminho do vídeo:", "/videos/hub.mp4");
+    console.error("Caminho do vídeo:", "/lovable-uploads/hub.mp4");
     setVideoError(true);
     setLoadingVideo(false);
   };
@@ -202,8 +202,8 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                     onError={handleVideoError}
                     preload="metadata"
                     playsInline
+                    src="/lovable-uploads/hub.mp4"
                   >
-                    <source src="/lovable-uploads/hub.mp4" type="video/mp4" />
                     Seu navegador não suporta reprodução de vídeo.
                   </video>
                 </div>

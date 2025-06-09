@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = 'https://imntrqfsmcbsbtpjndmm.supabase.co'
@@ -101,17 +100,45 @@ export const updatePost = async (id: string, updates: Partial<Post>): Promise<Po
 
 // Function to delete a post
 export const deletePost = async (id: string): Promise<boolean> => {
-  const { error } = await supabase
-    .from('posts')
-    .delete()
-    .eq('id', id)
+  console.log('Attempting to delete post with ID:', id);
+  
+  try {
+    // First, let's check if the post exists
+    const { data: existingPost, error: selectError } = await supabase
+      .from('posts')
+      .select('id, creator_id')
+      .eq('id', id)
+      .single()
 
-  if (error) {
-    console.error('Error deleting post:', error)
-    return false
+    if (selectError) {
+      console.error('Error finding post to delete:', selectError);
+      return false;
+    }
+
+    if (!existingPost) {
+      console.error('Post not found with ID:', id);
+      return false;
+    }
+
+    console.log('Found post to delete:', existingPost);
+
+    // Now attempt to delete
+    const { error: deleteError } = await supabase
+      .from('posts')
+      .delete()
+      .eq('id', id)
+
+    if (deleteError) {
+      console.error('Error deleting post:', deleteError);
+      return false;
+    }
+
+    console.log('Post deleted successfully from Supabase');
+    return true;
+  } catch (err) {
+    console.error('Network or other error deleting post:', err);
+    return false;
   }
-
-  return true
 }
 
 // Function to initialize the database

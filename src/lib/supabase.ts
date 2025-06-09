@@ -83,19 +83,48 @@ export const createPost = async (post: Omit<Post, 'id' | 'created_at'>): Promise
 
 // Function to update a post
 export const updatePost = async (id: string, updates: Partial<Post>): Promise<Post | null> => {
-  const { data, error } = await supabase
-    .from('posts')
-    .update(updates)
-    .eq('id', id)
-    .select()
-    .single()
+  console.log('Updating post with ID:', id);
+  console.log('Updates to apply:', updates);
+  
+  try {
+    // First, check if the post exists
+    const { data: existingPost, error: selectError } = await supabase
+      .from('posts')
+      .select('id, creator_id')
+      .eq('id', id)
+      .single()
 
-  if (error) {
-    console.error('Error updating post:', error)
-    return null
+    if (selectError) {
+      console.error('Error finding post to update:', selectError);
+      return null;
+    }
+
+    if (!existingPost) {
+      console.error('Post not found with ID:', id);
+      return null;
+    }
+
+    console.log('Found post to update:', existingPost);
+
+    // Now attempt to update
+    const { data, error } = await supabase
+      .from('posts')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error updating post:', error)
+      return null
+    }
+
+    console.log('Post updated successfully:', data);
+    return data
+  } catch (err) {
+    console.error('Network or other error updating post:', err);
+    return null;
   }
-
-  return data
 }
 
 // Function to delete a post

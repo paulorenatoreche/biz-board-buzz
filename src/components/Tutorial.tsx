@@ -24,12 +24,12 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
   };
 
   const handlePlayVideo = () => {
-    console.log("Iniciando reprodução do vídeo do Vimeo...");
+    console.log("Iniciando reprodução do vídeo do YouTube...");
     setIsVideoPlaying(true);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Fundo borrado */}
       <div 
         className="absolute inset-0 backdrop-blur-md"
@@ -43,7 +43,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
         <img
           src="/lovable-uploads/af_datlaz_logo_br.png"
           alt="Datlaz Logo"
-          className="h-8 md:h-10 drop-shadow-lg"
+          className="h-6 md:h-8 drop-shadow-lg"
           onError={(e) => {
             e.currentTarget.style.display = 'none';
           }}
@@ -53,7 +53,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
         <img
           src="/lovable-uploads/abeeolica_logo_br.png"
           alt="ABEEÓLICA Logo"
-          className="h-8 md:h-14 drop-shadow-lg"
+          className="h-6 md:h-10 drop-shadow-lg"
           onError={(e) => {
             e.currentTarget.style.display = 'none';
           }}
@@ -61,37 +61,37 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
       </div>
 
       {/* Conteúdo do tutorial */}
-      <Card className="relative z-50 w-full max-w-4xl mx-4 bg-white border-0 shadow-2xl">
-        <CardHeader className="text-center pb-6 pt-8">
-          <div className="flex justify-between items-start mb-4">
+      <Card className="relative z-50 w-full max-w-2xl mx-4 bg-white border-0 shadow-2xl max-h-[85vh] overflow-y-auto">
+        <CardHeader className="text-center pb-4 pt-6">
+          <div className="flex justify-between items-start mb-3">
             <div className="flex-1">
-              <h1 className="text-3xl font-bold mb-3" style={{ color: 'rgb(60, 71, 157)' }}>
+              <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'rgb(60, 71, 157)' }}>
                 Tutorial de Uso
               </h1>
-              <p className="text-gray-600 text-base">
+              <p className="text-gray-600 text-sm md:text-base">
                 Aprenda como usar o Hub de Negócios em poucos minutos
               </p>
             </div>
             <Button
               onClick={handleSkip}
               variant="ghost"
-              className="text-gray-400 hover:text-gray-600 p-2"
+              className="text-gray-400 hover:text-gray-600 p-1"
             >
-              <X size={20} />
+              <X size={18} />
             </Button>
           </div>
         </CardHeader>
         
-        <CardContent className="px-8 pb-8">
-          <div className="space-y-6">
+        <CardContent className="px-6 pb-6">
+          <div className="space-y-4">
             {/* Área do vídeo */}
             <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden border-gray-300 relative">
               {!isVideoPlaying ? (
                 <div className="w-full h-full relative bg-gray-200 flex items-center justify-center">
                   <div className="text-center">
                     <Play 
-                      size={64} 
-                      className="mx-auto mb-4 text-blue-600 hover:text-blue-800 cursor-pointer transition-colors drop-shadow-lg"
+                      size={48} 
+                      className="mx-auto mb-3 text-blue-600 hover:text-blue-800 cursor-pointer transition-colors drop-shadow-lg"
                       onClick={handlePlayVideo}
                     />
                     <p className="text-gray-700 text-sm font-medium">Clique para reproduzir o vídeo tutorial</p>
@@ -102,11 +102,11 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                 <div className="relative w-full h-full">
                   <iframe
                     className="w-full h-full"
-                    src="https://player.vimeo.com/video/1091837514?autoplay=1&title=0&byline=0&portrait=0&badge=0&controls=1&loop=0&autopause=0&pip=0&quality_selector=0&speed=0&keyboard=0&fullscreen=0"
+                    src="https://www.youtube.com/embed/pS3uuICcexc?autoplay=1&controls=1&rel=0&modestbranding=1"
                     title="Tutorial Hub de Negócios"
                     frameBorder="0"
                     allow="autoplay; picture-in-picture; clipboard-write; encrypted-media"
-                    allowFullScreen={false}
+                    allowFullScreen
                     style={{ 
                       pointerEvents: 'auto',
                       border: 'none'
@@ -117,43 +117,43 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
             </div>
             
             {/* Informações do tutorial */}
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-800">O que você vai aprender:</h3>
-              <ul className="space-y-2 text-gray-600">
+            <div className="space-y-2">
+              <h3 className="font-semibold text-gray-800 text-sm">O que você vai aprender:</h3>
+              <ul className="space-y-1.5 text-gray-600 text-sm">
                 <li className="flex items-center gap-2">
-                  <CheckCircle size={16} className="text-green-500" />
+                  <CheckCircle size={14} className="text-green-500" />
                   Como adicionar uma nova oportunidade de negócio
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle size={16} className="text-green-500" />
+                  <CheckCircle size={14} className="text-green-500" />
                   Como pesquisar e filtrar oportunidades
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle size={16} className="text-green-500" />
+                  <CheckCircle size={14} className="text-green-500" />
                   Como entrar em contato com outros empresários
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle size={16} className="text-green-500" />
+                  <CheckCircle size={14} className="text-green-500" />
                   Como editar suas oportunidades publicadas
                 </li>
               </ul>
             </div>
             
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-2 pt-3">
               <Button 
                 onClick={handleComplete}
-                className="flex-1 text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-12"
+                className="flex-1 text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-10 text-sm"
                 style={{
                   background: 'linear-gradient(135deg, rgb(60, 71, 157), rgb(45, 55, 135))'
                 }}
               >
-                <CheckCircle size={16} className="mr-2" />
+                <CheckCircle size={14} className="mr-2" />
                 Concluir Tutorial
               </Button>
               <Button 
                 onClick={handleSkip}
                 variant="outline"
-                className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-12 px-6 rounded-lg"
+                className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-10 px-4 rounded-lg text-sm"
               >
                 Pular Tutorial
               </Button>

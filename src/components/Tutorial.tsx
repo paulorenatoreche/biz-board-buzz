@@ -32,7 +32,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
 
   const handleVideoLoaded = () => {
     if (videoRef.current) {
-      videoRef.current.currentTime = 1; // Começa em 1 segundo
+      videoRef.current.currentTime = 0; // Começa em 1 segundo
     }
   };
 
@@ -42,7 +42,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
       const currentTime = videoRef.current.currentTime;
       
       // Para o vídeo 2 segundos antes do final
-      if (currentTime >= duration - 2) {
+      if (currentTime >= duration) {
         videoRef.current.pause();
         setVideoEnded(true);
       }

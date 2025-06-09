@@ -103,7 +103,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
         <CardContent className="px-8 pb-8">
           <div className="space-y-6">
             {/* Área do vídeo */}
-            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 relative">
+            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden border-gray-300 relative">
               {!isVideoPlaying ? (
                 <div className="w-full h-full relative">
                   {/* Video preview borrado no fundo */}

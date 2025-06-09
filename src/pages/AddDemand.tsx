@@ -85,7 +85,7 @@ const AddDemand = () => {
         category_value: finalCategory.value,
         category_label: finalCategory.label,
         category_color: finalCategory.color,
-        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
         creator_id: getCurrentUserId(),
       };
       
@@ -111,7 +111,7 @@ const AddDemand = () => {
           phone: data.phone,
           category: finalCategory,
           createdAt: new Date().toISOString(),
-          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
           creatorId: getCurrentUserId(),
         };
         

@@ -6,8 +6,9 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Mail, Phone, Calendar, Clock, Edit, Trash } from "lucide-react";
+import { Mail, Phone, Calendar, Clock, Edit, Trash, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/sonner";
 
@@ -31,11 +32,14 @@ interface Post {
 
 interface PostItProps {
   post: Post;
-  onDelete?: (postId: string) => void; // Nova prop para callback de exclusão
+  onDelete?: (postId: string) => void;
 }
 
 const PostIt = ({ post, onDelete }: PostItProps) => {
   const [showDetails, setShowDetails] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleContact = () => {
@@ -45,6 +49,22 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigate(`/edit-demand/${post.id}`);
+  };
+
+  const handleDeleteConfirm = () => {
+    setShowPasswordDialog(true);
+  };
+
+  const handlePasswordSubmit = () => {
+    // Verificar se a senha está correta (mesmo password da tela principal)
+    if (password === "datlaz2024") {
+      handleDelete();
+      setShowPasswordDialog(false);
+      setPassword("");
+    } else {
+      toast.error("Senha incorreta. Apenas o autor pode excluir a publicação.");
+      setPassword("");
+    }
   };
 
   const handleDelete = () => {
@@ -61,8 +81,9 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
         // Show success message
         toast.success("Publicação excluída com sucesso!");
         
-        // Close dialog
+        // Close dialogs
         setShowDetails(false);
+        setShowPasswordDialog(false);
         
         // Chama o callback para atualizar a lista no componente pai
         if (onDelete) {
@@ -236,10 +257,10 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
                         Cancelar
                       </AlertDialogCancel>
                       <AlertDialogAction 
-                        onClick={handleDelete}
+                        onClick={handleDeleteConfirm}
                         className="bg-red-600 text-white hover:bg-red-700"
                       >
-                        Excluir
+                        Continuar
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -313,6 +334,60 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
               <Edit size={16} className="mr-2" />
               Editar
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog de confirmação de senha */}
+      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+        <DialogContent className="bg-white border border-gray-200 shadow-2xl max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-gray-900">Confirmar Exclusão</DialogTitle>
+            <DialogDescription className="text-gray-600">
+              Digite a senha para confirmar que você é o autor desta publicação:
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Digite a senha"
+                className="pr-10 bg-gray-50 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:border-red-400 focus:ring-2 focus:ring-red-100 h-12 rounded-lg"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handlePasswordSubmit();
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowPasswordDialog(false);
+                  setPassword("");
+                }}
+                className="flex-1 bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={handlePasswordSubmit}
+                className="flex-1 bg-red-600 text-white hover:bg-red-700"
+                disabled={!password}
+              >
+                Excluir
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

@@ -57,7 +57,7 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
 
   const handlePasswordSubmit = () => {
     // Verificar se a senha está correta (mesmo password da tela principal)
-    if (password === "datlaz2024") {
+    if (password === "1234") {
       handleDelete();
       setShowPasswordDialog(false);
       setPassword("");

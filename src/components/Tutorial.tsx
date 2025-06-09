@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Play, X, CheckCircle, ArrowLeft } from "lucide-react";
+import { Play, X, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 
 interface TutorialProps {
@@ -32,7 +32,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
 
   const handleVideoLoaded = () => {
     if (videoRef.current) {
-      videoRef.current.currentTime = 0; // Começa em 1 segundo
+      videoRef.current.currentTime = 0;
     }
   };
 
@@ -41,7 +41,6 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
       const duration = videoRef.current.duration;
       const currentTime = videoRef.current.currentTime;
       
-      // Para o vídeo 2 segundos antes do final
       if (currentTime >= duration) {
         videoRef.current.pause();
         setVideoEnded(true);
@@ -102,73 +101,27 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
         </CardHeader>
         
         <CardContent className="px-8 pb-8">
-          {!isVideoPlaying ? (
-            <div className="space-y-6">
-              {/* Área do vídeo placeholder */}
-              <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
-                <div className="text-center">
-                  <Play 
-                    size={48} 
-                    className="mx-auto mb-4 text-gray-400 hover:text-blue-600 cursor-pointer transition-colors"
-                    onClick={handlePlayVideo}
-                  />
-                  <p className="text-gray-500 text-sm">Clique para reproduzir o vídeo</p>
-                  <p className="text-gray-400 text-xs mt-1">Tutorial em vídeo disponível</p>
+          <div className="space-y-6">
+            {/* Área do vídeo */}
+            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden border-2 border-dashed border-gray-300">
+              {!isVideoPlaying ? (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center">
+                    <Play 
+                      size={48} 
+                      className="mx-auto mb-4 text-gray-400 hover:text-blue-600 cursor-pointer transition-colors"
+                      onClick={handlePlayVideo}
+                    />
+                    <p className="text-gray-500 text-sm">Clique para reproduzir o vídeo</p>
+                    <p className="text-gray-400 text-xs mt-1">Tutorial em vídeo disponível</p>
+                  </div>
                 </div>
-              </div>
-              
-              {/* Informações do tutorial */}
-              <div className="space-y-3">
-                <h3 className="font-semibold text-gray-800">O que você vai aprender:</h3>
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-500" />
-                    Como adicionar uma nova oportunidade de negócio
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-500" />
-                    Como pesquisar e filtrar oportunidades
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-500" />
-                    Como entrar em contato com outros empresários
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-500" />
-                    Como editar suas oportunidades publicadas
-                  </li>
-                </ul>
-              </div>
-              
-              <div className="flex gap-3 pt-4">
-                <Button 
-                  onClick={handlePlayVideo}
-                  className="flex-1 text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-12"
-                  style={{
-                    background: 'linear-gradient(135deg, rgb(60, 71, 157), rgb(45, 55, 135))'
-                  }}
-                >
-                  <Play size={16} className="mr-2" />
-                  Assistir Tutorial
-                </Button>
-                <Button 
-                  onClick={handleSkip}
-                  variant="outline"
-                  className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-12 px-6 rounded-lg"
-                >
-                  Pular Tutorial
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {/* Vídeo real incorporado */}
-              <div className="aspect-video bg-black rounded-lg overflow-hidden">
+              ) : (
                 <video 
                   ref={videoRef}
                   controls 
                   autoPlay
-                  className="w-full h-full"
+                  className="w-full h-full bg-black"
                   onLoadedData={handleVideoLoaded}
                   onTimeUpdate={handleVideoTimeUpdate}
                   onEnded={handleVideoEnded}
@@ -176,31 +129,52 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                   <source src="/lovable-uploads/hub.mp4" type="video/mp4" />
                   Seu navegador não suporta o elemento de vídeo.
                 </video>
-              </div>
-              <div className="flex justify-between items-center">
-                <Button 
-                  onClick={() => setIsVideoPlaying(false)}
-                  variant="outline"
-                  className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-12 px-6 rounded-lg"
-                >
-                  <ArrowLeft size={16} className="mr-2" />
-                  Voltar
-                </Button>
-                <Button 
-                  onClick={handleComplete}
-                  className={`text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-12 px-6 ${
-                    videoEnded ? 'animate-pulse' : ''
-                  }`}
-                  style={{
-                    background: 'linear-gradient(135deg, rgb(60, 71, 157), rgb(45, 55, 135))'
-                  }}
-                >
-                  <CheckCircle size={16} className="mr-2" />
-                  Concluir Tutorial
-                </Button>
-              </div>
+              )}
             </div>
-          )}
+            
+            {/* Informações do tutorial */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-gray-800">O que você vai aprender:</h3>
+              <ul className="space-y-2 text-gray-600">
+                <li className="flex items-center gap-2">
+                  <CheckCircle size={16} className="text-green-500" />
+                  Como adicionar uma nova oportunidade de negócio
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle size={16} className="text-green-500" />
+                  Como pesquisar e filtrar oportunidades
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle size={16} className="text-green-500" />
+                  Como entrar em contato com outros empresários
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle size={16} className="text-green-500" />
+                  Como editar suas oportunidades publicadas
+                </li>
+              </ul>
+            </div>
+            
+            <div className="flex gap-3 pt-4">
+              <Button 
+                onClick={handleComplete}
+                className="flex-1 text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-12"
+                style={{
+                  background: 'linear-gradient(135deg, rgb(60, 71, 157), rgb(45, 55, 135))'
+                }}
+              >
+                <CheckCircle size={16} className="mr-2" />
+                Concluir Tutorial
+              </Button>
+              <Button 
+                onClick={handleSkip}
+                variant="outline"
+                className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-12 px-6 rounded-lg"
+              >
+                Pular Tutorial
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

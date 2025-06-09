@@ -28,6 +28,7 @@ interface Post {
   category: Category;
   createdAt: string;
   expiresAt: string;
+  creatorId?: string; // ID do usuário que criou o post
 }
 
 interface PostItProps {
@@ -42,12 +43,29 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  // Gerar ou recuperar ID único do usuário
+  const getCurrentUserId = () => {
+    let userId = localStorage.getItem('currentUserId');
+    if (!userId) {
+      userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('currentUserId', userId);
+    }
+    return userId;
+  };
+
+  const currentUserId = getCurrentUserId();
+  const isCreator = post.creatorId === currentUserId;
+
   const handleContact = () => {
     window.location.href = `mailto:${post.email}?subject=Business Opportunity Response`;
   };
 
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!isCreator) {
+      toast.error("Apenas o criador do post pode editá-lo.");
+      return;
+    }
     navigate(`/edit-demand/${post.id}`);
   };
 
@@ -157,20 +175,22 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
               >
                 {post.category?.label || "Uncategorized"}
               </Badge>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={handleEdit}
-                    className="w-6 h-6 p-0 bg-white/80 hover:bg-white border border-white/30 text-gray-600 hover:text-gray-800 shadow-sm flex-shrink-0 hover:scale-110 transition-transform duration-200"
-                    variant="outline"
-                  >
-                    <Edit size={12} />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Editar</p>
-                </TooltipContent>
-              </Tooltip>
+              {isCreator && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={handleEdit}
+                      className="w-6 h-6 p-0 bg-white/80 hover:bg-white border border-white/30 text-gray-600 hover:text-gray-800 shadow-sm flex-shrink-0 hover:scale-110 transition-transform duration-200"
+                      variant="outline"
+                    >
+                      <Edit size={12} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Editar</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </div>
           </div>
         </CardHeader>
@@ -326,14 +346,16 @@ const PostIt = ({ post, onDelete }: PostItProps) => {
               <Mail size={16} className="mr-2" />
               Entrar em Contato
             </Button>
-            <Button 
-              onClick={handleEdit}
-              variant="outline"
-              className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:scale-105 transition-all duration-200 h-12 px-6 rounded-lg sm:w-auto w-full"
-            >
-              <Edit size={16} className="mr-2" />
-              Editar
-            </Button>
+            {isCreator && (
+              <Button 
+                onClick={handleEdit}
+                variant="outline"
+                className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:scale-105 transition-all duration-200 h-12 px-6 rounded-lg sm:w-auto w-full"
+              >
+                <Edit size={16} className="mr-2" />
+                Editar
+              </Button>
+            )}
           </div>
         </DialogContent>
       </Dialog>

@@ -26,6 +26,7 @@ const EditDemand = () => {
   const { id } = useParams();
   const [isUpdating, setIsUpdating] = useState(false);
   const [postFound, setPostFound] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(true);
   const [showCustomCategory, setShowCustomCategory] = useState(false);
   
   const form = useForm<FormData>({
@@ -40,6 +41,16 @@ const EditDemand = () => {
     }
   });
 
+  // Gerar ou recuperar ID único do usuário
+  const getCurrentUserId = () => {
+    let userId = localStorage.getItem('currentUserId');
+    if (!userId) {
+      userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('currentUserId', userId);
+    }
+    return userId;
+  };
+
   useEffect(() => {
     // Load the post data from localStorage
     const existingPostsJSON = localStorage.getItem('bulletinPosts');
@@ -48,6 +59,13 @@ const EditDemand = () => {
       const postToEdit = existingPosts.find((post: any) => post.id === id);
       
       if (postToEdit) {
+        // Verificar se o usuário atual é o criador do post
+        const currentUserId = getCurrentUserId();
+        if (postToEdit.creatorId && postToEdit.creatorId !== currentUserId) {
+          setIsAuthorized(false);
+          return;
+        }
+
         // Check if it's a custom category
         const isCustomCategory = postToEdit.category.value.startsWith('custom-');
         
@@ -163,6 +181,36 @@ const EditDemand = () => {
             </div>
             <div className="text-center">
               <p className="text-white/80 mb-4">A oportunidade que você está tentando editar não foi encontrada.</p>
+              <Button
+                onClick={() => navigate("/")}
+                className="bg-white text-blue-600 hover:bg-white/90"
+              >
+                Voltar ao Hub
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgb(60, 71, 157) 0%, rgb(45, 55, 135) 50%, rgb(30, 40, 115) 100%)' }}>
+        <div className="relative z-10 text-white">
+          <div className="container mx-auto px-4 py-8">
+            <div className="flex items-center gap-4 mb-8">
+              <Button
+                onClick={() => navigate("/")}
+                variant="ghost"
+                className="text-white hover:bg-white/10 hover:scale-105 p-2 rounded-lg"
+              >
+                <ArrowLeft size={24} />
+              </Button>
+              <h1 className="text-3xl md:text-4xl font-bold">Acesso Negado</h1>
+            </div>
+            <div className="text-center">
+              <p className="text-white/80 mb-4">Apenas o criador desta oportunidade pode editá-la.</p>
               <Button
                 onClick={() => navigate("/")}
                 className="bg-white text-blue-600 hover:bg-white/90"

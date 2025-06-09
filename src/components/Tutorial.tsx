@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -18,7 +17,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
 
   const handleComplete = () => {
     console.log("Tutorial concluído!");
-    localStorage.setItem("tutorialCompleted", "true");
+    // Removido localStorage para compatibilidade
     onComplete();
   };
 
@@ -98,15 +97,20 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                   </div>
                 </div>
               ) : (
-                <iframe
-                  className="w-full h-full"
-                  src="https://www.youtube-nocookie.com/embed/AQk1d-B3pI8?autoplay=1&rel=0&modestbranding=1&showinfo=0&controls=1&fs=1&iv_load_policy=3&disablekb=1"
-                  title="Tutorial Hub de Negócios"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  style={{ pointerEvents: 'auto' }}
-                />
+                <div className="relative w-full h-full">
+                  <iframe
+                    className="w-full h-full"
+                    src="https://player.vimeo.com/video/1091837514?autoplay=1&title=0&byline=0&portrait=0&badge=0&controls=1&loop=0&autopause=0&pip=0&quality_selector=0&speed=0&keyboard=0&fullscreen=0"
+                    title="Tutorial Hub de Negócios"
+                    frameBorder="0"
+                    allow="autoplay; picture-in-picture; clipboard-write; encrypted-media"
+                    allowFullScreen={false}
+                    style={{ 
+                      pointerEvents: 'auto',
+                      border: 'none'
+                    }}
+                  />
+                </div>
               )}
             </div>
             

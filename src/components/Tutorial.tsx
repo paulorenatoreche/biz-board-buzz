@@ -1,8 +1,8 @@
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Play, X, CheckCircle, AlertCircle } from "lucide-react";
+import { Play, X, CheckCircle } from "lucide-react";
 
 interface TutorialProps {
   onComplete: () => void;
@@ -11,10 +11,6 @@ interface TutorialProps {
 const Tutorial = ({ onComplete }: TutorialProps) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const [videoError, setVideoError] = useState(false);
-  const [loadingVideo, setLoadingVideo] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleSkip = () => {
     console.log("Tutorial pulado!");
@@ -23,65 +19,13 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
 
   const handleComplete = () => {
     console.log("Tutorial concluído!");
+    localStorage.setItem("tutorialCompleted", "true");
     onComplete();
   };
 
   const handlePlayVideo = () => {
-    console.log("Tentando reproduzir vídeo...");
-    setLoadingVideo(true);
+    console.log("Iniciando reprodução do vídeo do YouTube...");
     setIsVideoPlaying(true);
-    setVideoError(false);
-    
-    if (videoRef.current) {
-      // Forçar o carregamento do vídeo
-      videoRef.current.load();
-      
-      const playPromise = videoRef.current.play();
-      
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log("Vídeo reproduzido com sucesso!");
-            setLoadingVideo(false);
-          })
-          .catch((error) => {
-            console.error("Erro ao reproduzir vídeo:", error);
-            setVideoError(true);
-            setLoadingVideo(false);
-          });
-      }
-    }
-  };
-
-  const handleVideoLoaded = () => {
-    console.log("Vídeo carregado com sucesso!");
-    setVideoLoaded(true);
-    setLoadingVideo(false);
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-    }
-  };
-
-  const handleVideoError = (e: any) => {
-    console.error("Erro ao carregar vídeo:", e);
-    console.error("Caminho do vídeo:", "/lovable-uploads/hub.mp4");
-    setVideoError(true);
-    setLoadingVideo(false);
-  };
-
-  const handleVideoTimeUpdate = () => {
-    if (videoRef.current) {
-      const duration = videoRef.current.duration;
-      const currentTime = videoRef.current.currentTime;
-      
-      if (currentTime >= duration - 0.1) {
-        setVideoEnded(true);
-      }
-    }
-  };
-
-  const handleVideoEnded = () => {
-    setVideoEnded(true);
   };
 
   return (
@@ -125,7 +69,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                 Tutorial de Uso
               </h1>
               <p className="text-gray-600 text-base">
-                Aprenda como usar o Hub de Negócios em poucos segundos
+                Aprenda como usar o Hub de Negócios em poucos minutos
               </p>
             </div>
             <Button
@@ -154,59 +98,19 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                     <p className="text-gray-500 text-xs mt-1">Vídeo explicativo sobre como usar a plataforma</p>
                   </div>
                 </div>
-              ) : videoError ? (
-                <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                  <div className="text-center p-8">
-                    <AlertCircle size={48} className="mx-auto mb-4 text-red-500" />
-                    <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                      Vídeo indisponível
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      Não foi possível carregar o vídeo tutorial no momento.
-                    </p>
-                    <p className="text-gray-500 text-sm mb-4">
-                      Você pode continuar e explorar a plataforma diretamente.
-                    </p>
-                    <Button 
-                      onClick={() => {
-                        setVideoError(false);
-                        setIsVideoPlaying(false);
-                      }}
-                      variant="outline"
-                      className="mr-2"
-                    >
-                      Tentar Novamente
-                    </Button>
-                    <Button onClick={handleComplete} variant="default">
-                      Continuar sem vídeo
-                    </Button>
-                  </div>
-                </div>
               ) : (
-                <div className="w-full h-full relative">
-                  {loadingVideo && (
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
-                      <div className="text-white text-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
-                        <p>Carregando vídeo...</p>
-                      </div>
-                    </div>
-                  )}
-                  <video 
-                    ref={videoRef}
-                    controls 
-                    className="w-full h-full bg-black"
-                    onLoadedData={handleVideoLoaded}
-                    onTimeUpdate={handleVideoTimeUpdate}
-                    onEnded={handleVideoEnded}
-                    onError={handleVideoError}
-                    preload="metadata"
-                    playsInline
-                    src="/lovable-uploads/hub.mp4"
-                  >
-                    Seu navegador não suporta reprodução de vídeo.
-                  </video>
-                </div>
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/AQk1d-B3pI8?autoplay=1&rel=0"
+                  title="Tutorial Hub de Negócios"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  onLoad={() => {
+                    console.log("Vídeo do YouTube carregado com sucesso!");
+                    setVideoEnded(false);
+                  }}
+                />
               )}
             </div>
             

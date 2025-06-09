@@ -10,7 +10,7 @@ serve(async (req) => {
     console.log('New post created:', record)
     
     // Configure seu email aqui
-    const notificationEmail = 'seu-email@gmail.com' // ALTERE PARA SEU EMAIL
+    const notificationEmail = 'nandolima2990@gmail.com' // ALTERE PARA SEU EMAIL
     
     if (!RESEND_API_KEY) {
       console.log('RESEND_API_KEY não configurado, apenas logando o post')

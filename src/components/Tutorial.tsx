@@ -12,7 +12,9 @@ interface TutorialProps {
 const Tutorial = ({ onComplete }: TutorialProps) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const previewVideoRef = useRef<HTMLVideoElement>(null);
 
   const handleSkip = () => {
     localStorage.setItem("tutorialCompleted", "true");
@@ -28,11 +30,21 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
 
   const handlePlayVideo = () => {
     setIsVideoPlaying(true);
+    if (videoRef.current) {
+      videoRef.current.play();
+    }
   };
 
   const handleVideoLoaded = () => {
+    setVideoLoaded(true);
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
+    }
+  };
+
+  const handlePreviewLoaded = () => {
+    if (previewVideoRef.current) {
+      previewVideoRef.current.currentTime = 1; // Mostra frame aos 1 segundo
     }
   };
 
@@ -79,7 +91,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
       </div>
 
       {/* Conteúdo do tutorial */}
-      <Card className="relative z-50 w-full max-w-2xl mx-4 bg-white border-0 shadow-2xl">
+      <Card className="relative z-50 w-full max-w-4xl mx-4 bg-white border-0 shadow-2xl">
         <CardHeader className="text-center pb-6 pt-8">
           <div className="flex justify-between items-start mb-4">
             <div className="flex-1">
@@ -108,11 +120,13 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                 <div className="w-full h-full relative">
                   {/* Video preview borrado no fundo */}
                   <video
+                    ref={previewVideoRef}
                     className="w-full h-full object-cover filter blur-sm"
                     muted
                     preload="metadata"
+                    onLoadedData={handlePreviewLoaded}
                   >
-                    <source src="/lovable-uploads/hub.mp4#t=0.1" type="video/mp4" />
+                    <source src="/lovable-uploads/hub.mp4" type="video/mp4" />
                   </video>
                   
                   {/* Overlay com play button */}
@@ -137,6 +151,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                   onLoadedData={handleVideoLoaded}
                   onTimeUpdate={handleVideoTimeUpdate}
                   onEnded={handleVideoEnded}
+                  preload="auto"
                 >
                   <source src="/lovable-uploads/hub.mp4" type="video/mp4" />
                   Seu navegador não suporta o elemento de vídeo.

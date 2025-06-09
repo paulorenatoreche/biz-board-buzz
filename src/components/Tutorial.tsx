@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Play, X, CheckCircle } from "lucide-react";
+import { Play, X, CheckCircle, Pause } from "lucide-react";
 import { toast } from "sonner";
 
 interface TutorialProps {
@@ -11,6 +11,7 @@ interface TutorialProps {
 
 const Tutorial = ({ onComplete }: TutorialProps) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [videoEnded, setVideoEnded] = useState(false);
 
   const handleSkip = () => {
     localStorage.setItem("tutorialCompleted", "true");
@@ -26,7 +27,10 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
 
   const handlePlayVideo = () => {
     setIsVideoPlaying(true);
-    // Aqui você pode adicionar a lógica para reproduzir o vídeo
+  };
+
+  const handleVideoEnded = () => {
+    setVideoEnded(true);
   };
 
   return (
@@ -89,7 +93,7 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
                     onClick={handlePlayVideo}
                   />
                   <p className="text-gray-500 text-sm">Clique para reproduzir o vídeo</p>
-                  <p className="text-gray-400 text-xs mt-1">Vídeo em produção</p>
+                  <p className="text-gray-400 text-xs mt-1">Tutorial em vídeo disponível</p>
                 </div>
               </div>
               
@@ -138,14 +142,32 @@ const Tutorial = ({ onComplete }: TutorialProps) => {
             </div>
           ) : (
             <div className="space-y-4">
-              {/* Área onde o vídeo real será incorporado */}
-              <div className="aspect-video bg-black rounded-lg flex items-center justify-center">
-                <p className="text-white">Vídeo tutorial será incorporado aqui</p>
+              {/* Vídeo real incorporado */}
+              <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                <video 
+                  controls 
+                  autoPlay
+                  className="w-full h-full"
+                  onEnded={handleVideoEnded}
+                >
+                  <source src="/lovable-uploads/hub.mp4" type="video/mp4" />
+                  Seu navegador não suporta o elemento de vídeo.
+                </video>
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-between items-center">
+                <Button 
+                  onClick={() => setIsVideoPlaying(false)}
+                  variant="outline"
+                  className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50 h-12 px-6 rounded-lg"
+                >
+                  <Pause size={16} className="mr-2" />
+                  Voltar
+                </Button>
                 <Button 
                   onClick={handleComplete}
-                  className="text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-12 px-6"
+                  className={`text-white border-0 shadow-lg hover:shadow-xl rounded-lg h-12 px-6 ${
+                    videoEnded ? 'animate-pulse' : ''
+                  }`}
                   style={{
                     background: 'linear-gradient(135deg, rgb(60, 71, 157), rgb(45, 55, 135))'
                   }}
